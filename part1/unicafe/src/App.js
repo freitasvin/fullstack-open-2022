@@ -15,7 +15,6 @@ const Button = ({text, handleClick}) => {
 // I had already defined the component Statistics
 
 const Statistics = ({
-  header, 
   feedbacks,
   goodClicks,
   neutralClicks,
@@ -26,9 +25,14 @@ const Statistics = ({
   const average = total > 0 ? (goodClicks + (badClicks * -1)) / total : 0;
   const positives = total > 0 ? (goodClicks / total) * 100 : 0;
 
+  if (total === 0 ){
+    return(
+      <p>No feedback given</p>
+    )
+  }
+
   return(
     <div>
-      <h1>{header}</h1>
       <p>{feedbacks[0]} {goodClicks}</p>
       <p>{feedbacks[1]} {neutralClicks}</p>
       <p>{feedbacks[2]} {badClicks}</p>
@@ -57,8 +61,8 @@ const App = () => {
       <Button text={feedbacks[0]} handleClick={handleGoodClick}/>
       <Button text={feedbacks[1]} handleClick={handleNeutralClick}/>
       <Button text={feedbacks[2]} handleClick={handleBadClick}/>
+      <Header text="statistics"/>
       <Statistics 
-        header="statistics" 
         feedbacks={feedbacks}
         goodClicks={good}
         neutralClicks={neutral}
