@@ -18,13 +18,21 @@ const Statistics = ({
   goodClicks,
   neutralClicks,
   badClicks
-  }) => {
+  }
+  ) => {
+  const total = (goodClicks + neutralClicks + badClicks);
+  const average = total > 0 ? (goodClicks + (badClicks * -1)) / total : 0;
+  const positives = total > 0 ? (goodClicks / total) * 100 : 0;
+
   return(
     <div>
       <h1>{header}</h1>
       <p>{feedbacks[0]} {goodClicks}</p>
       <p>{feedbacks[1]} {neutralClicks}</p>
       <p>{feedbacks[2]} {badClicks}</p>
+      <p>all {total}</p>
+      <p>average {average}</p>
+      <p>positive {positives} %</p>
     </div>
   )
 }
