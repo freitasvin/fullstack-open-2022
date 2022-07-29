@@ -12,6 +12,8 @@ const Button = ({text, handleClick}) => {
   )
 }
 
+// I had already defined the component Statistics
+
 const Statistics = ({
   header, 
   feedbacks,
