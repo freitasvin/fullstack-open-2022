@@ -12,10 +12,20 @@ const Button = ({text, handleClick}) => {
   )
 }
 
+const StatisticLine = ({text, value}) => {
+  if (text === "positive") {
+    return(
+      <p>{text} {value} %</p>
+    )
+  }
+
+  return (
+    <p>{text} {value}</p>
+  )
+}
 // I had already defined the component Statistics
 
 const Statistics = ({
-  feedbacks,
   goodClicks,
   neutralClicks,
   badClicks
@@ -33,12 +43,12 @@ const Statistics = ({
 
   return(
     <div>
-      <p>{feedbacks[0]} {goodClicks}</p>
-      <p>{feedbacks[1]} {neutralClicks}</p>
-      <p>{feedbacks[2]} {badClicks}</p>
-      <p>all {total}</p>
-      <p>average {average}</p>
-      <p>positive {positives} %</p>
+      <StatisticLine text="good" value={goodClicks} />
+      <StatisticLine text="neutral" value={neutralClicks} />
+      <StatisticLine text="bad" value={badClicks} />
+      <StatisticLine text="all" value={total} />
+      <StatisticLine text="average" value={average} />
+      <StatisticLine text="positive" value={positives} />
     </div>
   )
 }
@@ -49,8 +59,6 @@ const App = () => {
   const [neutral, setNeutral] = useState(0)
   const [bad, setBad] = useState(0)
 
-  const feedbacks = ["good", "neutral", "bad"];
-
   const handleGoodClick = () => setGood(good + 1);
   const handleNeutralClick = () => setNeutral(neutral + 1);
   const handleBadClick = () => setBad(bad + 1);
@@ -58,12 +66,11 @@ const App = () => {
   return (
     <div>
       <Header text="give feedback"/>
-      <Button text={feedbacks[0]} handleClick={handleGoodClick}/>
-      <Button text={feedbacks[1]} handleClick={handleNeutralClick}/>
-      <Button text={feedbacks[2]} handleClick={handleBadClick}/>
+      <Button text="good" handleClick={handleGoodClick}/>
+      <Button text="neutral" handleClick={handleNeutralClick}/>
+      <Button text="bad" handleClick={handleBadClick}/>
       <Header text="statistics"/>
       <Statistics 
-        feedbacks={feedbacks}
         goodClicks={good}
         neutralClicks={neutral}
         badClicks={bad}
