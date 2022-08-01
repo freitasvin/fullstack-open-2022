@@ -15,12 +15,18 @@ const Button = ({text, handleClick}) => {
 const StatisticLine = ({text, value}) => {
   if (text === "positive") {
     return(
-      <p>{text} {value} %</p>
+      <tr>
+        <td>{text}</td>
+        <td>{value} %</td>
+      </tr>
     )
   }
 
   return (
-    <p>{text} {value}</p>
+    <tr>
+        <td>{text}</td>
+        <td>{value} </td>
+    </tr>
   )
 }
 // I had already defined the component Statistics
@@ -43,12 +49,16 @@ const Statistics = ({
 
   return(
     <div>
-      <StatisticLine text="good" value={goodClicks} />
-      <StatisticLine text="neutral" value={neutralClicks} />
-      <StatisticLine text="bad" value={badClicks} />
-      <StatisticLine text="all" value={total} />
-      <StatisticLine text="average" value={average} />
-      <StatisticLine text="positive" value={positives} />
+      <table>
+        <tbody>
+          <StatisticLine text="good" value={goodClicks} />
+          <StatisticLine text="neutral" value={neutralClicks} />
+          <StatisticLine text="bad" value={badClicks} />
+          <StatisticLine text="all" value={total} />
+          <StatisticLine text="average" value={average} />
+          <StatisticLine text="positive" value={positives} />
+        </tbody>
+      </table>
     </div>
   )
 }
