@@ -1,7 +1,8 @@
 import React from 'react'
 import { Country } from '../Country'
+import { Button } from '../Button'
 
-export const Countries = ({countries}) => {
+export const Countries = ({countries, setSearch}) => {
 
   if (countries.length > 10){
     return(
@@ -13,7 +14,11 @@ export const Countries = ({countries}) => {
     return (
       <div>
       {countries.map(country => 
-        <p key={country.name.common}>{country.name.common}</p>)
+        <p key={country.name.common}>
+          {country.name.common} 
+          <Button text="show" onClick={() => setSearch(country.name.common)}/>
+        </p>
+        )
       }
     </div>
     )

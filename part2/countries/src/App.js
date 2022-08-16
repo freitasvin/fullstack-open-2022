@@ -26,12 +26,13 @@ const App = () => {
   const handleSearch = (event) => {
     setSearch(event.target.value)
   }
+
   return (
     <div>
       <Input text="find countries" handleSearch={handleSearch}/>
 
       {search.length > 0 && (
-        <Countries countries={filteredCountries}/>
+        <Countries countries={filteredCountries} setSearch={setSearch}/>
       )}
       
     </div>
