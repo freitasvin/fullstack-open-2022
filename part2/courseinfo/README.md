@@ -1,1 +1,1 @@
-# Exercise 1.1: course information, step1
+# Exercise: course information
