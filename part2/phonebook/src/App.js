@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { Form } from './components/Form'
 import { Filter } from './components/Filter'
 import { Numbers } from './components/Numbers'
-import axios from 'axios'
+import phonebookService from './services/phonebook'
 
 const App = () => {
   const [persons, setPersons] = useState([]) 
@@ -11,10 +11,12 @@ const App = () => {
   const [search, setSearch] = useState('')
 
   useEffect(() => {
-    axios
-    .get('http://localhost:3001/persons')
+    phonebookService
+    .getAll()
     .then((response) => {
-      setPersons(response.data)
+      setPersons(response)
+    }).catch(reason => {
+      console.log(reason)
     })
   }, [])
 
@@ -34,9 +36,32 @@ const App = () => {
     if (persons.find(person => person.name === newName)){
       alert(`${newName} is already added to phonebook`)  
     } else {
-      setPersons([...persons, { name: newName, number: newNumber }])
+      phonebookService
+      .create(
+        {
+          name: newName,
+          number: newNumber
+        }
+      )
+      .then(returnedPerson => {
+        setPersons([...persons, returnedPerson])
+      })
     }
   }
+
+  const handleClickDelete = (id) => {
+    const targetPerson = persons.find(persons => persons.id === id)
+
+    if (window.confirm(`delete ${targetPerson.name} ?`)){
+      phonebookService
+      .deletePerson(targetPerson.id)
+      .then(setPersons(persons.filter(person => 
+        person.id !== targetPerson.id
+      )))
+    }
+  }
+
+
 
   return (
     <div>
@@ -50,6 +75,7 @@ const App = () => {
       <Numbers 
         persons={persons} 
         search={search}
+        handleClickDelete={handleClickDelete}
       />
     </div>
   )
