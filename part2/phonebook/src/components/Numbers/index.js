@@ -1,5 +1,4 @@
 import { Person } from '../Person'
-import { Button } from '../Button'
 
 export const Numbers = ({
   persons,
@@ -14,10 +13,11 @@ export const Numbers = ({
         {persons.filter(person => 
           person.name.toLowerCase().includes(search.toLowerCase())
         ).map(person =>
-          <div key={person.id}>
-            <Person person={person}/> 
-            <Button handleClick={() => handleClickDelete(person.id)} text="delete"/>
-          </div>
+            <Person  
+              key={person.id}
+              person={person} 
+              handleClickDelete={handleClickDelete}
+            /> 
         )}
       </div>
     </div>

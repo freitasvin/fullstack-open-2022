@@ -1,5 +1,7 @@
-export const Person = ({person}) => {
+import { Button } from '../Button'
+
+export const Person = ({person, handleClickDelete}) => {
   return(
-    <span>{person.name} {person.number}</span>
+    <p>{person.name} {person.number} <Button handleClick={() => handleClickDelete(person.id)} text="delete"/></p>
   )
 }

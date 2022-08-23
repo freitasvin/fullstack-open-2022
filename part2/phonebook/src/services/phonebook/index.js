@@ -11,9 +11,14 @@ const create = newObject => {
   return request.then(response => response.data)
 }
 
+const update = (id, newObject) => {
+  const request = axios.put(`${baseUrl}/${id}`, newObject)
+  return request.then(response => response.data)
+}
+
 const deletePerson = (id) => {
   return axios.delete(`${baseUrl}/${id}`)
 }
 
 // eslint-disable-next-line import/no-anonymous-default-export
-export default {getAll, create, deletePerson}
+export default {getAll, create, update, deletePerson}
