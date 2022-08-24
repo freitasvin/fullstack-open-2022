@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Form } from './components/Form'
 import { Filter } from './components/Filter'
 import { Numbers } from './components/Numbers'
+import { Notification } from './components/Notification'
 import phonebookService from './services/phonebook'
 
 const App = () => {
@@ -9,6 +10,7 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [search, setSearch] = useState('')
+  const [errorMessage, setErrorMessage] = useState(null)
 
   useEffect(() => {
     phonebookService
@@ -42,9 +44,16 @@ const App = () => {
           name: person.name,
           number: newNumber
         })
-        .then(returnedPerson => setPersons(
-          persons.map(person => person.id !== returnedPerson.id ? person : returnedPerson)
-        ))
+        .then(returnedPerson => {
+        setPersons(persons.map(person => person.id !== returnedPerson.id ? person : returnedPerson))
+          
+        setErrorMessage(
+          `Added ${returnedPerson.name} successfuly`
+        )
+        setTimeout(() => {
+          setErrorMessage(null)
+        }, 5000)
+        })
       }  
     } else {
       phonebookService
@@ -56,6 +65,13 @@ const App = () => {
       )
       .then(returnedPerson => {
         setPersons([...persons, returnedPerson])
+
+        setErrorMessage(
+          `Added ${returnedPerson.name} successfuly`
+        )
+        setTimeout(() => {
+          setErrorMessage(null)
+        }, 5000)
       })
     }
   }
@@ -77,6 +93,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={errorMessage}/>
       <Filter handleSearch={handleSearch}/>
       <Form 
         handleSubmit={handleSubmit}
