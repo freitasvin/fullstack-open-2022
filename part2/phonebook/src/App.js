@@ -10,7 +10,7 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [search, setSearch] = useState('')
-  const [errorMessage, setErrorMessage] = useState(null)
+  const [message, setMessage] = useState(null)
 
   useEffect(() => {
     phonebookService
@@ -39,40 +39,43 @@ const App = () => {
     if (person){
       if (window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)){
         phonebookService
-        .update(person.id, {
-          id: person.id,
-          name: person.name,
-          number: newNumber
-        })
-        .then(returnedPerson => {
-        setPersons(persons.map(person => person.id !== returnedPerson.id ? person : returnedPerson))
-          
-        setErrorMessage(
-          `Added ${returnedPerson.name} successfuly`
-        )
-        setTimeout(() => {
-          setErrorMessage(null)
-        }, 5000)
-        })
+          .update(person.id, {
+            id: person.id,
+            name: person.name,
+            number: newNumber
+          })
+          .then(returnedPerson => {
+            setPersons(persons.map(person => person.id !== returnedPerson.id ? person : returnedPerson))
+          })
+          .catch(error => {
+            setPersons(persons.filter(item => item.id !== person.id))
+            setMessage({
+              type: "error", 
+              text: `Information of ${person.name} has already been removed from the server`
+            })
+            setTimeout(() => {
+              setMessage(null)
+            }, 5000)
+          })
       }  
     } else {
       phonebookService
-      .create(
-        {
-          name: newName,
-          number: newNumber
-        }
-      )
-      .then(returnedPerson => {
-        setPersons([...persons, returnedPerson])
-
-        setErrorMessage(
-          `Added ${returnedPerson.name} successfuly`
+        .create(
+          {
+            name: newName,
+            number: newNumber
+          }
         )
-        setTimeout(() => {
-          setErrorMessage(null)
-        }, 5000)
-      })
+        .then(returnedPerson => {
+          setPersons([...persons, returnedPerson])
+          setMessage({
+            type: "success" ,
+            text: `Added ${returnedPerson.name} successfuly`
+          })
+          setTimeout(() => {
+            setMessage(null)
+          }, 5000)
+        })
     }
   }
 
@@ -81,10 +84,18 @@ const App = () => {
 
     if (window.confirm(`delete ${targetPerson.name} ?`)){
       phonebookService
-      .deletePerson(targetPerson.id)
-      .then(setPersons(persons.filter(person => 
-        person.id !== targetPerson.id
-      )))
+        .deletePerson(targetPerson.id)
+        .then( () => {
+          setPersons(persons.filter(person => person.id !== targetPerson.id))
+          setMessage({
+            type: "success" ,
+            text: `${targetPerson.name} was deleted successfuly`
+          })
+          setTimeout(() => {
+            setMessage(null)
+          }, 5000)
+        
+        })
     }
   }
 
@@ -93,7 +104,10 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification message={errorMessage}/>
+      {message && (
+      <Notification type={message.type} message={message.text}/>
+      )}
+      
       <Filter handleSearch={handleSearch}/>
       <Form 
         handleSubmit={handleSubmit}
