@@ -23,21 +23,24 @@ let persons = [
     "name": "Mary Poppendieck", 
     "number": "39-23-6423122"
   }
-]
+];
 
+//Starting server
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
-})
+});
+
+app.use(express.json());
 
 //Homepage
 app.get('/', (req, res) => {
-  res.send('<h1>Phonebook</h1>')
-})
+  res.send('<h1>Phonebook</h1>');
+});
 
 //All persons
 app.get('/api/persons', (req, res) => {
   res.json(persons);
-})
+});
 
 //Api info
 app.get('/info', (req, res) => {
@@ -47,8 +50,8 @@ app.get('/info', (req, res) => {
   res.send(`
     <p>Phonebook has info for ${quantity} people</p>
     <p>${date}</p>
-    `)
-})
+    `);
+});
 
 //Single person search
 app.get('/api/persons/:id', (req, res) => {
@@ -56,17 +59,32 @@ app.get('/api/persons/:id', (req, res) => {
   const person = persons.find(person => person.id === id);
 
   if (person) {
-    res.json(person)
+    res.json(person);
   } else {
-    res.status(404).end('NOT FOUND')
-  }
-})
+    res.status(404).end('NOT FOUND');
+  };
+});
 
 //Delete person
 app.delete('/api/persons/:id', (req, res) => {
   const id = Number(req.params.id);
   persons = persons.filter(person => person.id !== id);
 
-  res.status(204).end()
-})
+  res.status(204).end();
+});
+
+//Add person
+app.post('/api/persons', (req, res) => {
+  const body = req.body;
+
+  const person = {
+    id: Math.floor(Math.random() * (1000 - 5) + 5),
+    name: body.name,
+    number: body.number
+  };
+
+  persons = persons.concat(person);
+
+  res.json(person);
+});
 
