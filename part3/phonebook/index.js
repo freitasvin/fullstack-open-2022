@@ -29,14 +29,17 @@ app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 })
 
+//Homepage
 app.get('/', (req, res) => {
   res.send('<h1>Phonebook</h1>')
 })
 
+//All persons
 app.get('/api/persons', (req, res) => {
   res.json(persons);
 })
 
+//Api info
 app.get('/info', (req, res) => {
   const quantity = persons.length;
   const date = new Date();
@@ -45,4 +48,16 @@ app.get('/info', (req, res) => {
     <p>Phonebook has info for ${quantity} people</p>
     <p>${date}</p>
     `)
+})
+
+//Single person search
+app.get('/api/persons/:id', (req, res) => {
+  id = Number(req.params.id);
+  const person = persons.find(person => person.id === id);
+
+  if (person) {
+    res.json(person)
+  } else {
+    res.status(404).end('NOT FOUND')
+  }
 })
