@@ -1,4 +1,5 @@
 const express = require('express');
+const morgan = require('morgan');
 const app = express();
 const PORT = 3001;
 
@@ -30,7 +31,15 @@ app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
 
+//Json middleware
 app.use(express.json());
+
+//Morgan middleware
+morgan.token('content', req => {
+  return JSON.stringify(req.body)
+})
+
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :content'))
 
 //Homepage
 app.get('/', (req, res) => {
