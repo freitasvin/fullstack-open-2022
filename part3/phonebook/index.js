@@ -32,8 +32,10 @@ app.listen(PORT, () => {
 });
 
 //CORS 
-
 app.use(cors())
+
+//Express show static content
+app.use(express.static('build'))
 
 //Homepage
 app.get('/', (req, res) => {
