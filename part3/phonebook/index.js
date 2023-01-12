@@ -13,11 +13,11 @@ app.listen(PORT, () => {
 //CORS 
 app.use(cors())
 
-//express JSON middleware
-app.use(express.json())
-
 //Express show static content
 app.use(express.static('build'))
+
+//express JSON middleware
+app.use(express.json())
 
 //Homepage
 app.get('/', (req, res) => {
@@ -27,9 +27,9 @@ app.get('/', (req, res) => {
 //All persons
 app.get('/api/persons', (req, res) => {
   Person.find({}).then(persons => {
-    res.json(persons)
+    res.json(persons.map(person => person.toJSON()))
   })
-});
+})
 
 //Api info
 app.get('/info', (req, res) => {
@@ -52,10 +52,7 @@ app.get('/api/persons/:id', (req, res) => {
       res.status(404).end()
     }
   })
-  .catch(error => {
-    console.log(error)
-    res.status(500).end({ error: 'malformatted id' })
-  })
+  .catch(error => next(error))
 });
 
 //Delete person
@@ -66,9 +63,7 @@ app.delete('/api/persons/:id', (req, res) => {
     .then(result => {
       res.status(204).end()
     })
-    .catch(error => {
-      console.log(error)
-    })
+    .catch(error => next(error))
 });
 
 //Add person
@@ -84,7 +79,29 @@ app.post('/api/persons', (req, res) => {
     number: body.number,
   })
 
-  person.save().then(savedPerson => {
+  person.save()
+  .then(savedPerson => {
     res.json(savedPerson)
   })
 });
+
+const unknownEndpoint = (req, res) => {
+  response.status(404).send({ error: 'unknown endpoint' })
+}
+
+app.use(unknownEndpoint)
+
+//Error middleware
+const errorHandler = (error, req, res, next) => {
+  console.error(error.message)
+
+  if (error.name === 'CastError') {
+    return res.status(400).send({ error: 'malformatted id' })
+  } else if (error.name === 'ValidationError') {
+    return res.status(400).json({ error: error.message })
+  }
+  
+  next(error)
+}
+
+app.use(errorHandler)
