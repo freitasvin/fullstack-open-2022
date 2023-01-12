@@ -1,6 +1,6 @@
 require('dotenv').config()
 const express = require('express');
-const Person = require('./models/persons')
+const Person = require('./models/person')
 const cors = require('cors');
 const app = express();
 const PORT = process.env.PORT;
@@ -44,22 +44,31 @@ app.get('/info', (req, res) => {
 
 //Single person search
 app.get('/api/persons/:id', (req, res) => {
-  id = Number(req.params.id);
-  const person = persons.find(person => person.id === id);
-
-  if (person) {
-    res.json(person);
-  } else {
-    res.status(404).end('NOT FOUND');
-  };
+  Person.findById(req.params.id)
+  .then(person => {
+    if (person) {
+      res.send(person)
+    } else {
+      res.status(404).end()
+    }
+  })
+  .catch(error => {
+    console.log(error)
+    res.status(500).end({ error: 'malformatted id' })
+  })
 });
 
 //Delete person
 app.delete('/api/persons/:id', (req, res) => {
-  const id = Number(req.params.id);
-  persons = persons.filter(person => person.id !== id);
-
-  res.status(204).end();
+  const id = req.params.id;
+  
+  Person.findByIdAndRemove(id)
+    .then(result => {
+      res.status(204).end()
+    })
+    .catch(error => {
+      console.log(error)
+    })
 });
 
 //Add person
