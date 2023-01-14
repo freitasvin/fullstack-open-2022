@@ -67,7 +67,7 @@ app.delete('/api/persons/:id', (req, res) => {
 });
 
 //Add person
-app.post('/api/persons', (req, res) => {
+app.post('/api/persons', (req, res, next) => {
   const body = req.body;
 
   if (body.name === undefined) {
@@ -80,13 +80,33 @@ app.post('/api/persons', (req, res) => {
   })
 
   person.save()
-  .then(savedPerson => {
-    res.json(savedPerson)
-  })
+    .then(savedPerson=> {
+        console.log(`added ${body.name} number ${body.number} to phonebook`)
+        res.json(savedPerson)
+        })
+    .catch(error => next(error))
 });
 
+app.put('/api/persons/:id', (req, res) => {
+  const id = req.params.id 
+  const body = req.body
+
+  const person = {
+    name: body.name,
+    number: body.number,
+  }
+
+  Person.findByIdAndUpdate(id, person)
+    .then(result => {
+      console.log(result)
+    })
+    .catch(error => {
+      next(error)
+    })
+})
+
 const unknownEndpoint = (req, res) => {
-  response.status(404).send({ error: 'unknown endpoint' })
+  res.status(404).send({ error: 'unknown endpoint' })
 }
 
 app.use(unknownEndpoint)
