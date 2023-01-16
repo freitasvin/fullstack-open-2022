@@ -1,16 +1,16 @@
 require('dotenv').config()
-const express = require('express');
+const express = require('express')
 const Person = require('./models/person')
-const cors = require('cors');
-const app = express();
-const PORT = process.env.PORT;
+const cors = require('cors')
+const app = express()
+const PORT = process.env.PORT
 
 //Starting server
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+  console.log(`Server running on port ${PORT}`)
+})
 
-//CORS 
+//CORS
 app.use(cors())
 
 //Express show static content
@@ -21,8 +21,8 @@ app.use(express.json())
 
 //Homepage
 app.get('/', (req, res) => {
-  res.send('<h1>Phonebook</h1>');
-});
+  res.send('<h1>Phonebook</h1>')
+})
 
 //All persons
 app.get('/api/persons', (req, res) => {
@@ -33,42 +33,48 @@ app.get('/api/persons', (req, res) => {
 
 //Api info
 app.get('/info', (req, res) => {
-  const quantity = persons.length;
-  const date = new Date();
-
-  res.send(`
-    <p>Phonebook has info for ${quantity} people</p>
-    <p>${date}</p>
-    `);
-});
+  const date = new Date().toLocaleString()
+  const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
+  Person.find({}).then(persons => {
+    res.send(
+      `
+          <div>
+              <p>Phonebook has info for ${persons.length} people</p>
+          </div>
+          <div>
+              <p>${date} ${timeZone}</p>
+          </div>`
+    )
+  })
+})
 
 //Single person search
-app.get('/api/persons/:id', (req, res) => {
+app.get('/api/persons/:id', (req, res, next) => {
   Person.findById(req.params.id)
-  .then(person => {
-    if (person) {
-      res.send(person)
-    } else {
-      res.status(404).end()
-    }
-  })
-  .catch(error => next(error))
-});
+    .then(person => {
+      if (person) {
+        res.send(person)
+      } else {
+        res.status(404).end()
+      }
+    })
+    .catch(error => next(error))
+})
 
 //Delete person
-app.delete('/api/persons/:id', (req, res) => {
-  const id = req.params.id;
-  
+app.delete('/api/persons/:id', (req, res, next) => {
+  const id = req.params.id
+
   Person.findByIdAndRemove(id)
     .then(result => {
       res.status(204).end()
     })
     .catch(error => next(error))
-});
+})
 
 //Add person
 app.post('/api/persons', (req, res, next) => {
-  const body = req.body;
+  const body = req.body
 
   if (body.name === undefined) {
     return res.status(400).json({ error: 'content missing' })
@@ -80,15 +86,15 @@ app.post('/api/persons', (req, res, next) => {
   })
 
   person.save()
-    .then(savedPerson=> {
-        console.log(`added ${body.name} number ${body.number} to phonebook`)
-        res.json(savedPerson)
-        })
+    .then(savedPerson => {
+      console.log(`added ${body.name} number ${body.number} to phonebook`)
+      res.json(savedPerson)
+    })
     .catch(error => next(error))
-});
+})
 
-app.put('/api/persons/:id', (req, res) => {
-  const id = req.params.id 
+app.put('/api/persons/:id', (req, res, next) => {
+  const id = req.params.id
   const body = req.body
 
   const person = {
@@ -120,7 +126,7 @@ const errorHandler = (error, req, res, next) => {
   } else if (error.name === 'ValidationError') {
     return res.status(400).json({ error: error.message })
   }
-  
+
   next(error)
 }
 

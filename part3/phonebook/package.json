@@ -10,7 +10,8 @@
     "build:ui": "rm -rf build && cd ../../part2/phonebook && npm run build && cp -r build ../../part3/phonebook",
     "deploy": "flyctl deploy",
     "deploy:full": "npm run build:ui && npm run deploy",
-    "logs:prod": "flyctl logs"
+    "logs:prod": "flyctl logs",
+    "lint": "eslint ."
   },
   "author": "Vinícius de Almeida Freitas",
   "license": "ISC",
@@ -20,5 +21,8 @@
     "express": "^4.18.1",
     "mongoose": "^6.8.2",
     "morgan": "^1.10.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.32.0"
   }
 }
