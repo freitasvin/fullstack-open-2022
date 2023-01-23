@@ -54,6 +54,25 @@ test('a valid note can be added', async () => {
   expect(blogsInDb).toHaveLength(helper.initialBlogs.length + 1)
 })
 
+test('if likes property is missing, the default value is 0', async () => {
+  const newBlog = {
+    title: 'Coding 3',
+    author: 'Vinicius Freitas',
+    url: 'localhost:3005',
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+  const blogsInDb = await helper.blogsInDb()
+  const addedBlog = blogsInDb.find(blog => blog.title === 'Coding 3')
+
+  expect(addedBlog.likes).toBe(0)
+})
+
 
 afterAll(async () => {
   await mongoose.connection.close()
