@@ -2,8 +2,8 @@ const mongoose = require('mongoose')
 const supertest = require('supertest')
 const app = require('../app')
 const api = supertest(app)
-const helper = require('../utils/test_helper')
-const Blog = require('../models/blogs')
+const helper = require('./test_helper')
+const Blog = require('../models/blog')
 
 beforeEach(async () => {
   await Blog.deleteMany({})
@@ -34,6 +34,27 @@ test('the unique identifier property of the blog posts is named id', async () =>
 
   expect(response.body[0].id).toBeDefined()
 })
+
+test('a valid note can be added', async () => {
+  const newBlog = {
+    title: 'Coding 2',
+    author: 'Vinicius Freitas',
+    url: 'localhost:3001',
+    likes: 15,
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+  const blogsInDb = await helper.blogsInDb()
+
+  expect(blogsInDb).toHaveLength(helper.initialBlogs.length + 1)
+})
+
+
 afterAll(async () => {
   await mongoose.connection.close()
 })
