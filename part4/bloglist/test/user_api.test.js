@@ -39,6 +39,35 @@ describe('when there is initially one user in db', () => {
   })
 })
 
+describe('addition of invalid users', () => {
+  test('a user with an invalid password can not be added', async () => {
+    const invalidUser = {
+      username: 'invalidUser',
+      name: 'Invalid User',
+      password: 'iu',
+    }
+
+    await api
+      .post('/api/users')
+      .send(invalidUser)
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+  })
+
+  test('a user without username can not be added', async () => {
+    const invalidUser = {
+      name: 'Invalid User',
+      password: 'iminvalid?'
+    }
+
+    await api
+      .post('/api/users')
+      .send(invalidUser)
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+  })
+})
+
 
 afterAll(async () => {
   await mongoose.connection.close()
