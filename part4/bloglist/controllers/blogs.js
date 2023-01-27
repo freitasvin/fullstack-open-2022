@@ -30,6 +30,8 @@ blogsRouter.post('/', async (request, response) => {
   })
 
   const savedBlog = await newBlog.save()
+  user.blogs = user.blogs.concat(savedBlog._id)
+  await user.save()
 
   response.status(201).send(savedBlog)
 })
@@ -52,9 +54,18 @@ blogsRouter.put('/:id', async (request, response) => {
 
 blogsRouter.delete('/:id', async (request, response) => {
   const id = request.params.id
+  const blogToDelete = await Blog.findById(id)
 
-  await Blog.findByIdAndRemove(id)
+  const decodedToken = jwt.verify(request.token, process.env.SECRET)
+  const user = await User.findById(decodedToken.id)
 
+  if (!(blogToDelete.user.toString() === user.id.toString())){
+    return response.status(401).end()
+  }
+
+  user.blogs = user.blogs.filter(blog => blog.toString() !== blogToDelete.id.toString())
+  await user.save()
+  await blogToDelete.delete()
   response.status(204).end()
 })
 
