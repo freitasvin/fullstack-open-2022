@@ -1,6 +1,6 @@
 export const getUserStorage = () => {
   const loggedUser = window.localStorage.getItem('loggedUser')
-  return JSON.parse(loggedUser) ?? ''
+  return JSON.parse(loggedUser) ?? null
 }
 
 export const saveUserStorage = user => {

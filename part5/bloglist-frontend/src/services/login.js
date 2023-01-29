@@ -2,14 +2,12 @@ import axios from 'axios';
 import { saveUserStorage, destroyUserStorage } from '../storage/userStorage';
 const baseUrl = '/api/login'
 
-const login = async credentials => {
+export const loginUser = async credentials => {
   const { data } = await axios.post(baseUrl, credentials)
   saveUserStorage(data)
   return data
 }
 
-const logout = () => {
+export const logoutUser = () => {
   destroyUserStorage()
 }
-
-export default { login, logout }

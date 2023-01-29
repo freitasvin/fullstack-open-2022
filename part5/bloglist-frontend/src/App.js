@@ -1,73 +1,102 @@
 import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
-import blogService from './services/blogs'
-import loginService from './services/login'
+import { getAllBlog, createBlog } from './services/blogs'
+import { LoginForm } from './components/LoginForm'
+import { logoutUser } from './services/login'
 import { getUserStorage } from './storage/userStorage'
 
 const App = () => {
+  const [user, setUser] = useState(null)
   const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const [user, setUser] = useState(null)
+  const [blogTitle, setBlogTitle] = useState('')
+  const [blogAuthor, setBlogAuthor] = useState('')
+  const [blogUrl, setBlogUrl] = useState('')
 
   useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs( blogs )
-    )  
+    const fetchData = async () => {
+      setBlogs(await getAllBlog())
+    }
+
+    fetchData()
   }, [])
 
   useEffect(() => {
     setUser(getUserStorage())
   }, [])
 
-  const handleLogin = async (event) => {
-    event.preventDefault()
-
-    try{
-      const user = await loginService.login({
-        username, password
-      })
-      setUser(user)
-      setUsername('')
-      setPassword('')
-    } catch{
-      console.log('Erro no login')
-    }
+  const handleLogout = () => {
+    logoutUser()
+    setUser(null)
   }
 
-  const handleLogout = () => {
-    loginService.logout()
-    setUser(null)
+  const handleCreate = async () => {
+    const returnedBlog = await createBlog({
+      title: blogTitle, 
+      author: blogAuthor,
+      url: blogUrl,
+    }, user.token)
+
+    setBlogs([...blogs, returnedBlog])
+    setBlogTitle('')
+    setBlogAuthor('')
+    setBlogUrl('')
   }
 
   if(!user){
     return (
-      <form onSubmit={handleLogin}>
-        <div>
-          username
-          <input 
-            type='text' 
-            value={username} 
-            onChange={({target}) => {setUsername(target.value)}}
-          />
-        </div>
-        <div>
-          password
-          <input 
-            type='password' 
-            value={password} 
-            onChange={({target}) => {setPassword(target.value)}}
-          />
-        </div>
-        <button type='submit'>login</button>
-      </form>
+      <LoginForm 
+        setUser={setUser}
+        setUsername={setUsername}
+        setPassword={setPassword}
+        username={username}
+        password={password}
+      />
     )
   }
 
   return (
     <div>
       <div>
+        {user.username} logged in
         <button onClick={handleLogout}>logout</button>
+      </div>
+      <div>
+        <h1>create new</h1>
+        <form onSubmit={handleCreate}>
+          <div>
+            title
+            <input 
+              type='text' 
+              value={blogTitle}
+              onChange={({target}) => {
+                setBlogTitle(target.value)
+              }}
+            />
+          </div>
+          <div>
+            author
+            <input 
+              type='text' 
+              value={blogAuthor}
+              onChange={({target}) => {
+                setBlogAuthor(target.value)
+              }}
+            />
+          </div>
+          <div>
+            url
+            <input 
+              type='text'
+              value={blogUrl}
+              onChange={({target}) => {
+                setBlogUrl(target.value)
+              }}
+            />
+          </div>
+          <button type='submit'>create</button>
+        </form>
       </div>
       <div>
         <h2>blogs</h2>
