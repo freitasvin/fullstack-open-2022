@@ -9,8 +9,8 @@ const User = require('../models/user')
 beforeEach(async () => {
   await User.deleteMany({})
 
-  const passwordHash = await bcrypt.hash('sekret', 10)
-  const user = new User({ username: 'root', passwordHash })
+  const passwordHash = await bcrypt.hash('test', 10)
+  const user = new User({ username: 'test', passwordHash })
 
   await user.save()
 })

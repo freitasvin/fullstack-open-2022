@@ -5,6 +5,31 @@ const api = supertest(app)
 const helper = require('./test_helper')
 const Blog = require('../models/blog')
 
+let headers
+
+beforeAll(async () => {
+  const testUser = {
+    username: 'test',
+    name: 'test',
+    password: 'test'
+  }
+
+  await api
+    .post('/api/users')
+    .send(testUser)
+
+  const loggedTestUser = await api
+    .post('/api/login')
+    .send({
+      username: testUser.username,
+      password: testUser.password
+    })
+
+  headers = {
+    'authorization': `Bearer ${loggedTestUser.body.token}`
+  }
+})
+
 beforeEach(async () => {
   await Blog.deleteMany({})
 
@@ -40,6 +65,7 @@ describe('when there is initially some blogs saved', () => {
 
 describe('addition of a new note', () => {
   test('a valid note can be added', async () => {
+
     const newBlog = {
       title: 'Coding 2',
       author: 'Vinicius Freitas',
@@ -50,6 +76,7 @@ describe('addition of a new note', () => {
     await api
       .post('/api/blogs')
       .send(newBlog)
+      .set(headers)
       .expect(201)
       .expect('Content-Type', /application\/json/)
 
@@ -70,6 +97,7 @@ describe('verifying blog properties', () => {
     await api
       .post('/api/blogs')
       .send(newBlog)
+      .set(headers)
       .expect(201)
       .expect('Content-Type', /application\/json/)
 
@@ -95,12 +123,14 @@ describe('verifying blog properties', () => {
     await api
       .post('/api/blogs')
       .send(blogWithoutTitle)
+      .set(headers)
       .expect(400)
       .expect('Content-Type', /application\/json/)
 
     await api
       .post('/api/blogs')
       .send(blogWithoutUrl)
+      .set(headers)
       .expect(400)
       .expect('Content-Type', /application\/json/)
   })
@@ -108,12 +138,23 @@ describe('verifying blog properties', () => {
 
 describe('deletion of a blog', () => {
   test('succeeds with status code 204 if id is valid', async () => {
-    const blogsAtStart = await helper.blogsInDb()
-    const blogToDelete = blogsAtStart[0]
+    const newBlog = {
+      title: 'test',
+      author: 'test',
+      url: 'test.com'
+    }
+
+    const blogToDelete = await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .set(headers)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
 
 
     await api
-      .delete(`/api/blogs/${blogToDelete.id}`)
+      .delete(`/api/blogs/${blogToDelete.body.id}`)
+      .set(headers)
       .expect(204)
   })
 })
@@ -129,6 +170,7 @@ describe('update of a blog', () => {
     await api
       .put(`/api/blogs/${blogToUpdate.id}`)
       .send(blogToUpdate)
+      .set(headers)
       .expect(200)
       .expect('Content-Type', /application\/json/)
 
