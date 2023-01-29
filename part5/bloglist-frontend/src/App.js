@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import { getUserStorage } from './storage/userStorage'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -13,6 +14,10 @@ const App = () => {
     blogService.getAll().then(blogs =>
       setBlogs( blogs )
     )  
+  }, [])
+
+  useEffect(() => {
+    setUser(getUserStorage())
   }, [])
 
   const handleLogin = async (event) => {
@@ -28,6 +33,11 @@ const App = () => {
     } catch{
       console.log('Erro no login')
     }
+  }
+
+  const handleLogout = () => {
+    loginService.logout()
+    setUser(null)
   }
 
   if(!user){
@@ -56,10 +66,15 @@ const App = () => {
 
   return (
     <div>
-      <h2>blogs</h2>
-      {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} />
-      )}
+      <div>
+        <button onClick={handleLogout}>logout</button>
+      </div>
+      <div>
+        <h2>blogs</h2>
+        {blogs.map(blog =>
+          <Blog key={blog.id} blog={blog} />
+        )}  
+      </div>
     </div>
   )
 }
