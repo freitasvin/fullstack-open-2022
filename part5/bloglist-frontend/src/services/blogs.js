@@ -10,6 +10,7 @@ export const createBlog = async (blogData, token) => {
   const config = {
     headers: { Authorization: `Bearer ${token}`},
   }
+  const { data } = await axios.post(baseUrl, blogData, config)
 
-  await axios.post(baseUrl, blogData, config)
+  return data
 }

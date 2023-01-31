@@ -5,7 +5,8 @@ export const LoginForm = ({
   setUsername,
   setPassword,
   username,
-  password
+  password,
+  setMessage,
 }) => {
 
   const handleLogin = async (event) => {
@@ -18,8 +19,16 @@ export const LoginForm = ({
       setUser(user)
       setUsername('')
       setPassword('')
+      setMessage(null)
     } catch{
-      console.log('Erro no login')
+      setMessage({
+        type: 'error',
+        text: 'wrong username or password'
+      })
+
+      setTimeout(() => {
+        setMessage(null)
+      }, 5000)
     }
   }
 
