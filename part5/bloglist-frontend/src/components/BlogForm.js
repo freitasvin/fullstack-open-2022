@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { createBlog } from '../services/blogs'
 
-export const BlogForm = ({setBlogs, setMessage, user, blogs}) => {
+export const BlogForm = ({setBlogs, setMessage, user, blogs, handleLogout}) => {
   const [blogTitle, setBlogTitle] = useState('')
   const [blogAuthor, setBlogAuthor] = useState('')
   const [blogUrl, setBlogUrl] = useState('')
@@ -44,6 +44,10 @@ export const BlogForm = ({setBlogs, setMessage, user, blogs}) => {
 
   return (
     <div>
+      <div>
+        {user.username} logged in
+        <button onClick={handleLogout}>logout</button>
+      </div>
       <h1>create new</h1>
       <form onSubmit={handleCreate}>
         <div>

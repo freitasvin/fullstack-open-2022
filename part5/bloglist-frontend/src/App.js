@@ -31,42 +31,31 @@ const App = () => {
     setUser(null)
   }
 
-  if(!user){
-    return (
-      <div>
-        <h1>log in to application</h1>
-        {message && 
-          <Notification type={message.type} message={message.text}/>
-        }
-        <LoginForm 
-          setUser={setUser}
-          setUsername={setUsername}
-          setPassword={setPassword}
-          username={username}
-          password={password}
-          setMessage={setMessage}
-        />  
-      </div>
-    )
-  }
-
   return (
     <div>
-      <div>
-        {user.username} logged in
-        <button onClick={handleLogout}>logout</button>
-      </div>
+      {
+        user
+        ? <BlogForm 
+            setBlogs={setBlogs} 
+            setMessage={setMessage} 
+            user={user}
+            blogs={blogs}
+            handleLogout={handleLogout}
+          />
+        : <LoginForm 
+            setUser={setUser}
+            setUsername={setUsername}
+            setPassword={setPassword}
+            username={username}
+            password={password}
+            setMessage={setMessage}
+          />
+      }
       <div>
         {message && 
           <Notification type={message.type} message={message.text}/>
         }
       </div>
-      <BlogForm 
-        setBlogs={setBlogs} 
-        setMessage={setMessage} 
-        user={user}
-        blogs={blogs}
-      />
       <div>
         <h2>blogs</h2>
         {blogs.map(blog =>
