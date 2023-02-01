@@ -49,7 +49,7 @@ const App = () => {
   const addBlog = async (newBlog) => {
     try{
       const returnedBlog = await createBlog(newBlog, user.token)
-      setBlogs(blogs.concat(returnedBlog))
+      setBlogs(blogs.concat({...returnedBlog, user: {...user, username: user.username}}))
       setMessage({
         type: 'success',
         text: `a new blog ${newBlog.title} by ${newBlog.author} added`
