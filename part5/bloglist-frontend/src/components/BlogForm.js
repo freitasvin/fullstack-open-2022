@@ -1,15 +1,15 @@
-import { useState } from 'react'
+import React, { useState } from 'react'
 
 export const BlogForm = ({ addBlog }) => {
   const [blogTitle, setBlogTitle] = useState('')
   const [blogAuthor, setBlogAuthor] = useState('')
   const [blogUrl, setBlogUrl] = useState('')
 
-  const handleSubmit = async (event) => {    
+  const handleSubmit = async (event) => {
     event.preventDefault()
 
     addBlog({
-      title: blogTitle, 
+      title: blogTitle,
       author: blogAuthor,
       url: blogUrl,
     })
@@ -25,30 +25,30 @@ export const BlogForm = ({ addBlog }) => {
       <form onSubmit={handleSubmit}>
         <div>
           title
-          <input 
-            type='text' 
+          <input
+            type='text'
             value={blogTitle}
-            onChange={({target}) => {
+            onChange={({ target }) => {
               setBlogTitle(target.value)
             }}
           />
         </div>
         <div>
           author
-          <input 
-            type='text' 
+          <input
+            type='text'
             value={blogAuthor}
-            onChange={({target}) => {
+            onChange={({ target }) => {
               setBlogAuthor(target.value)
             }}
           />
         </div>
         <div>
           url
-          <input 
+          <input
             type='text'
             value={blogUrl}
-            onChange={({target}) => {
+            onChange={({ target }) => {
               setBlogUrl(target.value)
             }}
           />

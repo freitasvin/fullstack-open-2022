@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { loginUser, logoutUser } from '../src/services/login'
-import { getAllBlog, createBlog } from './services/blogs'
+import { getAllBlog, createBlog, putBlog } from './services/blogs'
 import { getUserStorage } from './storage/userStorage'
 import { Blog } from './components/Blog'
 import { BlogForm } from './components/BlogForm'
@@ -30,7 +30,7 @@ const App = () => {
       const user = await loginUser(userObject)
       setUser(user)
       setMessage(null)
-    } catch{
+    } catch (exception){
       setMessage({
         type: 'error',
         text: 'wrong username or password'
@@ -49,7 +49,7 @@ const App = () => {
   const addBlog = async (newBlog) => {
     try{
       const returnedBlog = await createBlog(newBlog, user.token)
-      setBlogs(blogs.concat({...returnedBlog, user: {...user, username: user.username}}))
+      setBlogs(blogs.concat({ ...returnedBlog }))
       setMessage({
         type: 'success',
         text: `a new blog ${newBlog.title} by ${newBlog.author} added`
@@ -57,7 +57,7 @@ const App = () => {
       setTimeout(() => {
         setMessage(null)
       }, 5000)
-    } catch {
+    } catch (exception){
       setMessage({
         type: 'error',
         text: 'error on add a new blog'
@@ -68,37 +68,58 @@ const App = () => {
     }
   }
 
+  const updateBlog = async (blogObject) => {
+    try{
+      const returnedBlog = await putBlog(blogObject, user.token)
+      setBlogs(blogs.map(blog => blog.id !== returnedBlog.id ? blog : returnedBlog))
+    } catch (exception) {
+      console.error(exception)
+      setMessage({
+        type: 'error',
+        text: 'error on update a blog'
+      })
+      setTimeout(() => {
+        setMessage(null)
+      }, 5000)
+    }
+  }
+
   return (
     <div>
       <h1>Blogs</h1>
-      {user === null 
+      {user === null
         ? <Toggleable buttonLabel='log in'>
-            <LoginForm handleLogin={handleLogin}/>
-          </Toggleable>
+          <LoginForm handleLogin={handleLogin}/>
+        </Toggleable>
         : <div>
-            <div>
-              {user.name} logged in
-              <button onClick={handleLogout}>logout</button>
-            </div>
-            <Toggleable buttonLabel='new blog'>
-              <BlogForm 
-                setBlogs={setBlogs} 
-                blogs={blogs}
-                user={user}
-                addBlog={addBlog}
-              />
-            </Toggleable>
+          <div>
+            {user.name} logged in
+            <button onClick={handleLogout}>logout</button>
           </div>
+          <Toggleable buttonLabel='new blog'>
+            <BlogForm
+              setBlogs={setBlogs}
+              blogs={blogs}
+              user={user}
+              addBlog={addBlog}
+            />
+          </Toggleable>
+        </div>
       }
       <div>
-        {message && 
+        {message &&
           <Notification type={message.type} message={message.text}/>
         }
       </div>
       <div>
         {blogs.map(blog =>
-          <Blog key={blog.id} blog={blog}/>
-        )}  
+          <Blog
+            key={blog.id}
+            blog={blog}
+            updateBlog={updateBlog}
+            user={user}
+          />
+        )}
       </div>
     </div>
   )

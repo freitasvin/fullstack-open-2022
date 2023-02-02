@@ -1,3 +1,4 @@
+import React from 'react'
 import { useState } from 'react'
 
 export const Toggleable = ({ children, buttonLabel }) => {
@@ -8,7 +9,7 @@ export const Toggleable = ({ children, buttonLabel }) => {
   }
 
   return (
-    <div style={{marginBottom: '10px', marginTop: '10px'}}>
+    <div style={{ marginBottom: '10px', marginTop: '10px' }}>
       <div hidden={visible}>
         <button onClick={toggleVisibility}>{buttonLabel}</button>
       </div>

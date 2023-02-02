@@ -1,5 +1,5 @@
-import axios from 'axios';
-import { saveUserStorage, destroyUserStorage } from '../storage/userStorage';
+import axios from 'axios'
+import { saveUserStorage, destroyUserStorage } from '../storage/userStorage'
 const baseUrl = '/api/login'
 
 export const loginUser = async credentials => {

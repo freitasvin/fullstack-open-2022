@@ -1,4 +1,5 @@
-export const Notification = ({type, message}) => {
+import React from 'react'
+export const Notification = ({ type, message }) => {
   if (message === null){
     return null
   }
