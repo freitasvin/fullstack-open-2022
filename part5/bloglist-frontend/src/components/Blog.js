@@ -13,10 +13,10 @@ export const Blog = ({ blog, updateBlog, user }) => {
   const handleLike = () => {
     const blogObject = {
       ...blog,
-      likes: blog.likes + 1
+      likes: blogLikes + 1
     }
-    setBlogLikes(blogObject.likes)
     updateBlog(blogObject)
+    setBlogLikes(blogObject.likes)
   }
 
   return ( // todo likes só se estiver logado
