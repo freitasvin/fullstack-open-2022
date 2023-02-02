@@ -5,7 +5,7 @@ import { getUserStorage } from './storage/userStorage'
 import { Blog } from './components/Blog'
 import { BlogForm } from './components/BlogForm'
 import { LoginForm } from './components/LoginForm'
-import { Toggleable } from './components/Toggleable'
+import { Togglable } from './components/Togglable'
 import { Notification } from './components/Notification'
 
 const App = () => {
@@ -122,23 +122,23 @@ const App = () => {
       <h1>Blogs</h1>
       {user === null
         ?
-        <Toggleable buttonLabel='log in'>
+        <Togglable buttonLabel='log in'>
           <LoginForm handleLogin={handleLogin}/>
-        </Toggleable>
+        </Togglable>
         :
         <div>
           <div>
             {user.name} logged in
             <button onClick={handleLogout}>logout</button>
           </div>
-          <Toggleable buttonLabel='new blog'>
+          <Togglable buttonLabel='new blog'>
             <BlogForm
               setBlogs={setBlogs}
               blogs={blogs}
               user={user}
               addBlog={addBlog}
             />
-          </Toggleable>
+          </Togglable>
         </div>
       }
       <div>

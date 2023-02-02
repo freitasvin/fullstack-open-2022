@@ -11,3 +11,4 @@ export const Notification = ({ type, message }) => {
     </div>
   )
 }
+
