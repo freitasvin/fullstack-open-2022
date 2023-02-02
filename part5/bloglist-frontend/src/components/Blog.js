@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-export const Blog = ({ blog, updateBlog, user }) => {
+export const Blog = ({ user, blog, updateBlog, deleteBlog }) => {
   const [buttonText, setButtonText] = useState('view')
   const [viewDetails, setViewDetails] = useState(false)
   const [blogLikes, setBlogLikes] = useState(blog.likes)
@@ -19,6 +19,8 @@ export const Blog = ({ blog, updateBlog, user }) => {
     setBlogLikes(blogObject.likes)
   }
 
+  const handleClickRemove = () => deleteBlog(blog)
+
   return ( // todo likes só se estiver logado
     <div className='blog'>
       {blog.title} {blog.author}
@@ -28,9 +30,12 @@ export const Blog = ({ blog, updateBlog, user }) => {
           <div>{blog.url}</div>
           <div>
             likes: {blogLikes}
-            { user && <button onClick={handleLike}>like</button> }
+            <button hidden={!user} onClick={handleLike}>like</button>
           </div>
           <div>{blog.user.username}</div>
+          <div>
+            <button hidden={!user} onClick={handleClickRemove}>remove</button>
+          </div>
         </div>
       }
     </div>

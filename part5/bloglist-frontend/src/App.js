@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { loginUser, logoutUser } from '../src/services/login'
-import { getAllBlog, createBlog, putBlog } from './services/blogs'
+import { getAllBlog, createBlog, putBlog, removeBlog } from './services/blogs'
 import { getUserStorage } from './storage/userStorage'
 import { Blog } from './components/Blog'
 import { BlogForm } from './components/BlogForm'
@@ -33,7 +33,7 @@ const App = () => {
     } catch (exception){
       setMessage({
         type: 'error',
-        text: 'wrong username or password'
+        text: 'Wrong username or password'
       })
       setTimeout(() => {
         setMessage(null)
@@ -48,11 +48,11 @@ const App = () => {
 
   const addBlog = async (newBlog) => {
     try{
-      const returnedBlog = await createBlog(newBlog, user.token)
+      const returnedBlog = await createBlog(newBlog, user)
       setBlogs(blogs.concat({ ...returnedBlog }))
       setMessage({
         type: 'success',
-        text: `a new blog ${newBlog.title} by ${newBlog.author} added`
+        text: `A new blog ${newBlog.title} by ${newBlog.author} added`
       })
       setTimeout(() => {
         setMessage(null)
@@ -70,17 +70,48 @@ const App = () => {
 
   const updateBlog = async (blogObject) => {
     try{
-      const returnedBlog = await putBlog(blogObject, user.token)
+      const returnedBlog = await putBlog(blogObject, user)
       setBlogs(blogs.map(blog => blog.id !== returnedBlog.id ? blog : returnedBlog))
-    } catch (exception) {
-      console.error(exception)
       setMessage({
-        type: 'error',
-        text: 'error on update a blog'
+        type: 'success',
+        text: 'The blog was successfully updated'
       })
       setTimeout(() => {
         setMessage(null)
       }, 5000)
+    } catch (exception) {
+      setMessage({
+        type: 'error',
+        text: 'Error on update a blog'
+      })
+      setTimeout(() => {
+        setMessage(null)
+      }, 5000)
+    }
+  }
+
+  const deleteBlog = async (blogObject) => {
+    if (window.confirm(`Remove ${blogObject.title} by ${blogObject.author}`)){
+      try{
+        await removeBlog(blogObject, user)
+        setBlogs(blogs.filter(blog => blog.id !== blogObject.id))
+        setMessage({
+          type: 'success',
+          text: `Blog ${blogObject.title} was successfully deleted`
+        })
+        setTimeout(() => {
+          setMessage(null)
+        }, 5000)
+      } catch (exception) {
+        console.log(exception)
+        setMessage({
+          type: 'error',
+          text: `Blog ${blogObject.title} was not deleted`
+        })
+        setTimeout(() => {
+          setMessage(null)
+        }, 5000)
+      }
     }
   }
 
@@ -90,10 +121,12 @@ const App = () => {
     <div>
       <h1>Blogs</h1>
       {user === null
-        ? <Toggleable buttonLabel='log in'>
+        ?
+        <Toggleable buttonLabel='log in'>
           <LoginForm handleLogin={handleLogin}/>
         </Toggleable>
-        : <div>
+        :
+        <div>
           <div>
             {user.name} logged in
             <button onClick={handleLogout}>logout</button>
@@ -116,10 +149,11 @@ const App = () => {
       <div>
         {blogs.sort(likesSort).map(blog =>
           <Blog
+            user={user}
             key={blog.id}
             blog={blog}
             updateBlog={updateBlog}
-            user={user}
+            deleteBlog={deleteBlog}
           />
         )}
       </div>

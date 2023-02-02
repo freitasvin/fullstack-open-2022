@@ -6,22 +6,29 @@ export const getAllBlog = async () => {
   return data
 }
 
-export const createBlog = async (blogData, token) => {
+export const createBlog = async (blogData, user) => {
   const config = {
-    headers: { Authorization: `Bearer ${token}` },
+    headers: { Authorization: `Bearer ${user.token}` },
   }
   const { data } = await axios.post(baseUrl, blogData, config)
-  data.user = blogData.user
+  data.user = user
+  console.log(blogData)
+  return data
+}
+
+export const putBlog = async (blogData, user) => {
+  const config = {
+    headers: { Authorization: `Bearer ${user.token}` },
+  }
+  const { data } = await axios.put(`${baseUrl}/${blogData.id}`, blogData, config)
+  data.user = user
 
   return data
 }
 
-export const putBlog = async (blogData, token) => {
+export const removeBlog = async (blogData, user) => {
   const config = {
-    headers: { Authorization: `Bearer ${token}` },
+    headers: { Authorization: `Bearer ${user.token}` },
   }
-  const { data } = await axios.put(`${baseUrl}/${blogData.id}`, blogData, config)
-  data.user = blogData.user
-
-  return data
+  return await axios.delete(`${baseUrl}/${blogData.id}`, config)
 }
