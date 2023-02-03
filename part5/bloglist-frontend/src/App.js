@@ -149,8 +149,8 @@ const App = () => {
       <div>
         {blogs.sort(likesSort).map(blog =>
           <Blog
-            user={user}
             key={blog.id}
+            user={user}
             blog={blog}
             updateBlog={updateBlog}
             deleteBlog={deleteBlog}
