@@ -15,10 +15,10 @@ describe('Testing blog component', () => {
     }
   }
 
-  test('should render only title and author by default', async () => {
-    const mockUpdate = jest.fn()
-    const mockDelete = jest.fn()
+  const mockUpdate = jest.fn()
+  const mockDelete = jest.fn()
 
+  test('should render only title and author by default', () => {
     render(<Blog blog={blog} updateBlog={mockUpdate} deleteBlog={mockDelete}/>)
 
     const element = screen.getByText(
@@ -32,14 +32,8 @@ describe('Testing blog component', () => {
     expect(userDetails).toBeNull()
   })
 
-  test('should render all deitals', async () => {
-    const mockUpdate = jest.fn()
-    const mockDelete = jest.fn()
-
+  test('should render all deitals', () => {
     render(<Blog blog={blog} updateBlog={mockUpdate} deleteBlog={mockDelete}/>)
-
-    screen.debug()
-
     const element = screen.getByText(
       `${blog.title} - ${blog.author}`
     )
