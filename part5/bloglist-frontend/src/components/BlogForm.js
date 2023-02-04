@@ -27,6 +27,7 @@ export const BlogForm = ({ addBlog }) => {
         <div>
           title
           <input
+            id='title'
             type='text'
             value={blogTitle}
             onChange={({ target }) => {
@@ -37,6 +38,7 @@ export const BlogForm = ({ addBlog }) => {
         <div>
           author
           <input
+            id='author'
             type='text'
             value={blogAuthor}
             onChange={({ target }) => {
@@ -47,6 +49,7 @@ export const BlogForm = ({ addBlog }) => {
         <div>
           url
           <input
+            id='url'
             type='text'
             value={blogUrl}
             onChange={({ target }) => {
@@ -54,7 +57,7 @@ export const BlogForm = ({ addBlog }) => {
             }}
           />
         </div>
-        <button type='submit'>create</button>
+        <button id='create' type='submit'>create</button>
       </form>
     </div>
   )
