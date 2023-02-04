@@ -24,7 +24,7 @@ export const Blog = ({ user, blog, updateBlog, deleteBlog }) => {
 
   return ( // todo likes só se estiver logado
     <div className='blog'>
-      {blog.title} {blog.author}
+      {blog.title} - {blog.author}
       <button onClick={handleClickDetails}>{buttonText}</button>
       {viewDetails &&
         <div>

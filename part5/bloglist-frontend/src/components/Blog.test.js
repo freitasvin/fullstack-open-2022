@@ -22,18 +22,40 @@ describe('Testing blog component', () => {
     render(<Blog blog={blog} updateBlog={mockUpdate} deleteBlog={mockDelete}/>)
 
     const element = screen.getByText(
-      `${blog.title} ${blog.author}`
+      `${blog.title} - ${blog.author}`
     )
     const button = screen.getByText('view')
-    let userDetails = screen.queryByText(blog.url && `likes: ${blog.likes}`)
+    let userDetails = screen.queryByText(blog.url)
 
     expect(element).toBeDefined()
     expect(button).toBeDefined()
     expect(userDetails).toBeNull()
+  })
+
+  test('should render all deitals', async () => {
+    const mockUpdate = jest.fn()
+    const mockDelete = jest.fn()
+
+    render(<Blog blog={blog} updateBlog={mockUpdate} deleteBlog={mockDelete}/>)
+
+    screen.debug()
+
+    const element = screen.getByText(
+      `${blog.title} - ${blog.author}`
+    )
+    const button = screen.getByText('view')
+
+    expect(element).toBeDefined()
+    expect(button).toBeDefined()
 
     userEvent.click(button)
-    userDetails = screen.queryByText(blog.url && `likes: ${blog.likes}`)
 
-    expect(userDetails).toBeDefined()
+    screen.debug()
+
+    const userDetailsUrl = screen.getByText(blog.url)
+    const userDetailsLikes = screen.getByText(`likes: ${blog.likes}`)
+
+    expect(userDetailsUrl).toBeDefined()
+    expect(userDetailsLikes).toBeDefined()
   })
 })
