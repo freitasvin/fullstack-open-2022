@@ -44,8 +44,6 @@ describe('Testing blog component', () => {
 
     userEvent.click(button)
 
-    screen.debug()
-
     const userDetailsUrl = screen.getByText(blog.url)
     const userDetailsLikes = screen.getByText(`likes: ${blog.likes}`)
 
