@@ -22,7 +22,7 @@ export const Blog = ({ user, blog, updateBlog, deleteBlog }) => {
 
   const handleClickRemove = () => deleteBlog(blog)
 
-  return ( // todo likes só se estiver logado
+  return (
     <div className='blog'>
       {blog.title} - {blog.author}
       <button onClick={handleClickDetails}>{buttonText}</button>

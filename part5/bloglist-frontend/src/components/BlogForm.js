@@ -57,7 +57,7 @@ export const BlogForm = ({ addBlog }) => {
             }}
           />
         </div>
-        <button id='create' type='submit'>create</button>
+        <button id='create-button' type='submit'>create</button>
       </form>
     </div>
   )
