@@ -1,13 +1,13 @@
 describe('Blog app', function() {
   beforeEach(function() {
-    cy.request('POST', 'http://localhost:3003/api/testing/reset')
+    cy.request('POST', `${Cypress.env('EXTERNAL_API')}/testing/reset`)
     const newUser = {
       name: 'cypress',
       username: 'cypress',
       password: 'cypress'
     }
-    cy.request('POST', 'http://localhost:3003/api/users', newUser)
-    cy.visit('http://localhost:3000')
+    cy.request('POST', `${Cypress.env('EXTERNAL_API')}/users`, newUser)
+    cy.visit('')
   })
 
   it('Login form is shown', function() {
@@ -60,6 +60,36 @@ describe('Blog app', function() {
         .and('have.css', 'color', 'rgb(0, 128, 0)')
 
       cy.contains('Testing with cypress - Cypress')
+    })
+
+    describe('When create a blog', function() {
+      beforeEach(function() {
+        cy.createBlog({
+          title: 'Testing with cypress',
+          author: 'Cypress',
+          url: 'localhost:3000',
+        })
+      })
+
+      it('users can like a blog', function() {
+        cy.contains('Testing with cypress - Cypress')
+          .parent()
+          .find('button')
+          .as('view-button')
+
+        cy.get('@view-button').click()
+
+        cy.get('@view-button')
+          .parent()
+          .get('#like-button')
+          .click()
+
+        cy.contains('The blog was successfully updated')
+
+        cy.get('@view-button')
+          .parent()
+          .should('contain', 'likes: 1')
+      })
     })
   })
 })

@@ -31,7 +31,7 @@ export const Blog = ({ user, blog, updateBlog, deleteBlog }) => {
           <div>{blog.url}</div>
           <div>
             likes: {blogLikes}
-            <button hidden={!user} onClick={handleLike}>like</button>
+            <button id='like-button' hidden={!user} onClick={handleLike}>like</button>
           </div>
           <div>{blog.user.username}</div>
           <div>
