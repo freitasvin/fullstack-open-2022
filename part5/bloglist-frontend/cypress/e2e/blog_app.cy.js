@@ -122,5 +122,43 @@ describe('Blog app', function() {
           .should('not.exist')
       })
     })
+    describe('Blogs ordered by number of likes', function() {
+      it('they are ordered by number of likes', function() {
+        cy.createBlog({ author: 'Vinicius Freitas', title: 'blog1', url: 'http://localhost:3000/example/blog1' })
+        cy.createBlog({ author: 'Vinicius Freitas', title: 'blog2', url: 'http://localhost:3000/example/blog2' })
+        cy.createBlog({ author: 'Vinicius Freitas', title: 'blog3', url: 'http://localhost:3000/example/blog3' })
+
+        cy.contains('blog1').parent().parent().as('blog1')
+        cy.contains('blog2').parent().parent().as('blog2')
+        cy.contains('blog3').parent().parent().as('blog3')
+
+        cy.get('@blog1').contains('view').click()
+        cy.get('@blog2').contains('view').click()
+        cy.get('@blog3').contains('view').click()
+
+        cy.get('@blog1').contains('like').as('like1')
+        cy.get('@blog2').contains('like').as('like2')
+        cy.get('@blog3').contains('like').as('like3')
+
+        cy.get('@like2').click()
+        cy.wait(500)
+        cy.get('@like1').click()
+        cy.wait(500)
+        cy.get('@like1').click()
+        cy.wait(500)
+        cy.get('@like3').click()
+        cy.wait(500)
+        cy.get('@like3').click()
+        cy.wait(500)
+        cy.get('@like3').click()
+        cy.wait(500)
+
+        cy.get('.blog').then(blogs => {
+          cy.wrap(blogs[0]).contains('likes: 3')
+          cy.wrap(blogs[1]).contains('likes: 2')
+          cy.wrap(blogs[2]).contains('likes: 1')
+        })
+      })
+    })
   })
 })
