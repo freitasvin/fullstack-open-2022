@@ -35,7 +35,9 @@ export const Blog = ({ user, blog, updateBlog, deleteBlog }) => {
           </div>
           <div>{blog.user.username}</div>
           <div>
-            <button id='remove-button' hidden={!user} onClick={handleClickRemove}>remove</button>
+            {user.username === blog.user.username
+              && <button id='remove-button' hidden={!user} onClick={handleClickRemove}>remove</button>
+            }
           </div>
         </div>
       }

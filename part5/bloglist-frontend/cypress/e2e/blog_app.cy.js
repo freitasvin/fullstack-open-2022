@@ -69,14 +69,14 @@ describe('Blog app', function() {
           author: 'Cypress',
           url: 'localhost:3000',
         })
-      })
 
-      it('users can like a blog', function() {
         cy.contains('Testing with cypress - Cypress')
           .parent()
           .find('button')
           .as('view-button')
+      })
 
+      it('users can like a blog', function() {
         cy.get('@view-button').click()
 
         cy.get('@view-button')
@@ -92,11 +92,6 @@ describe('Blog app', function() {
       })
 
       it('user who created a blog can delete it', function() {
-        cy.contains('Testing with cypress - Cypress')
-          .parent()
-          .find('button')
-          .as('view-button')
-
         cy.get('@view-button').click()
 
         cy.get('@view-button')
@@ -105,6 +100,26 @@ describe('Blog app', function() {
           .click()
 
         cy.get('.blog').should('not.exist')
+      })
+
+      it('other users but the creator do not see the delete button', function() {
+        const newUser = {
+          name: 'Another User',
+          username: 'havenoblogs',
+          password: 'havenoblogs'
+        }
+        cy.request('POST', `${Cypress.env('EXTERNAL_API')}/users`, newUser)
+
+        cy.get('#logout-button').click
+
+        cy.login({ username: 'havenoblogs', password: 'havenoblogs' })
+
+        cy.get('@view-button').click()
+
+        cy.get('@view-button')
+          .parent()
+          .get('#remove-button')
+          .should('not.exist')
       })
     })
   })
