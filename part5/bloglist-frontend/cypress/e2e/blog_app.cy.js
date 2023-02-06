@@ -90,6 +90,22 @@ describe('Blog app', function() {
           .parent()
           .should('contain', 'likes: 1')
       })
+
+      it('user who created a blog can delete it', function() {
+        cy.contains('Testing with cypress - Cypress')
+          .parent()
+          .find('button')
+          .as('view-button')
+
+        cy.get('@view-button').click()
+
+        cy.get('@view-button')
+          .parent()
+          .get('#remove-button')
+          .click()
+
+        cy.get('.blog').should('not.exist')
+      })
     })
   })
 })
