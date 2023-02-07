@@ -7,3 +7,4 @@ Exercise solutions for the Full Stack Open course
 ### [Part 3 - Programming a server with NodeJS and Express](./part3)
 ### [Part 4 - Testing Express servers, user administration](./part4)
 ### [Part 5 - Testing React apps](./part5)
+### [Part 6 - Advanced state management](./part6)
