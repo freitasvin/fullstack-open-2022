@@ -1,6 +1,5 @@
 import { useEffect } from 'react'
-import { getAll } from './services/anecdotesService'
-import { setAnecdotes } from './reducers/anecdoteReducer'
+import { initializeAnecdotes} from './reducers/anecdoteReducer'
 import Notification from './components/Notification'
 import Filter from './components/Filter'
 import { AnecdoteForm } from './components/AnecdoteForm'
@@ -12,7 +11,7 @@ const App = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      dispatch(setAnecdotes(await getAll()))
+      dispatch(initializeAnecdotes())
     }
 
     fetchData()
