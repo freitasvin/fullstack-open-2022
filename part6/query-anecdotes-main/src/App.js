@@ -2,9 +2,12 @@ import AnecdoteForm from './components/AnecdoteForm'
 import Notification from './components/Notification'
 import { useMutation, useQuery, useQueryClient } from 'react-query'
 import { getAnecdotes, createAnectdote, updateAnecdote } from './requests'
+import { useContext } from 'react'
+import { NotificationContext } from './NotificationContext'
 
 const App = () => {
   const queryClient = useQueryClient()
+  const [notification, notificationDispatcher] = useContext(NotificationContext)
 
   const { data: allAnecdotes, isLoading, isError } = useQuery('anecdotes', getAnecdotes, {
     refetchOnWindowFocus: false,
@@ -15,6 +18,8 @@ const App = () => {
     onSuccess: (newAnecdote) => {
       const anecdotes = queryClient.getQueryData('anecdotes')
       queryClient.setQueryData('anecdotes', anecdotes.concat(newAnecdote))
+      console.log(newAnecdote) 
+      notificationDispatcher({ type: 'SET_NOTIFICATION',  payload: `anecdote '${newAnecdote.content}' added`})
     }
   })
 
@@ -24,6 +29,7 @@ const App = () => {
       queryClient.setQueryData('anecdotes', anecdotes.map(anecdote => 
         anecdote.id !== updatedAnecdote.id ? anecdote : updatedAnecdote
       ))
+      notificationDispatcher({ type: 'SET_NOTIFICATION',  payload: `you voted '${updatedAnecdote.content}'`})
     }
   })
 
