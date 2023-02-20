@@ -20,6 +20,10 @@ const App = () => {
       queryClient.setQueryData('anecdotes', anecdotes.concat(newAnecdote))
       console.log(newAnecdote) 
       notificationDispatcher({ type: 'SET_NOTIFICATION',  payload: `anecdote '${newAnecdote.content}' added`})
+    },
+    onError: ({ response }) => {
+      const { error } = response.data
+      notificationDispatcher({ type: 'SET_NOTIFICATION',  payload: error })
     }
   })
 
