@@ -90,28 +90,13 @@ const CreateNew = (props) => {
       <h2>create a new anecdote</h2>
       <form onSubmit={handleSubmit}>
         <div>
-          Content:
-          <input
-            type={content.type} 
-            value={content.value}
-            onChange={content.onChange}
-          />
+          Content: <input {...content.fieldProps} />
         </div>
         <div>
-          Author: 
-          <input
-            type={author.type} 
-            value={author.value}
-            onChange={author.onChange}
-          />
+          Author: <input {...author.fieldProps} />
         </div>
         <div>
-          Info: 
-          <input
-            type={info.type} 
-            value={info.value}
-            onChange={info.onChange}
-          />
+          Info: <input {...info.fieldProps} />
         </div>
         <button>create</button>
         <button onClick={handleReset}>reset</button>
