@@ -122,6 +122,12 @@ const App = () => {
   const addNew = (anecdote) => {
     anecdote.id = Math.round(Math.random() * 10000)
     setAnecdotes(anecdotes.concat(anecdote))
+
+    setNotification(`added ${anecdote.content}`)
+
+    setTimeout(() => {
+      setNotification(null)
+    }, 5000)
   }
 
   const anecdoteById = (id) =>
@@ -139,12 +145,13 @@ const App = () => {
   }
 
   const match = useMatch('/anecdotes/:id')
-  const anecdote = match ? anecdotes.find(anecdote => anecdote.id === Number(match.params.id)) : null
+  const anecdote = match ? anecdoteById(Number(match.params.id)) : null
 
   return (
     <div>
       <h1>Software anecdotes</h1>
       <Menu />
+      {notification}
       <Routes>
         <Route path="/" element={<AnecdoteList anecdotes={anecdotes} />}/>
         <Route path="/create" element={<CreateNew addNew={addNew} />}/>
