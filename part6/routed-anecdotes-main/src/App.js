@@ -71,9 +71,9 @@ const CreateNew = (props) => {
   const handleSubmit = (e) => {
     e.preventDefault()
     props.addNew({
-      content: content.value,
-      author: author.value,
-      info: info.value,
+      content: content.fieldProps.value,
+      author: author.fieldProps.value,
+      info: info.fieldProps.value,
       votes: 0
     })
   }
@@ -129,6 +129,7 @@ const App = () => {
   const addNew = (anecdote) => {
     anecdote.id = Math.round(Math.random() * 10000)
     setAnecdotes(anecdotes.concat(anecdote))
+    console.log(anecdote)
 
     setNotification(`added ${anecdote.content}`)
 
