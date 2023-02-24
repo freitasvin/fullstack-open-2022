@@ -7,11 +7,15 @@ import { BlogForm } from './components/BlogForm'
 import { LoginForm } from './components/LoginForm'
 import { Togglable } from './components/Togglable'
 import { Notification } from './components/Notification'
+import { hideNotification, showNotification } from './reducers/notificationReducer'
+import { useDispatch, useSelector } from 'react-redux'
 
 const App = () => {
   const [user, setUser] = useState(null)
   const [blogs, setBlogs] = useState([])
-  const [message, setMessage] = useState(null)
+  const stateNotification = useSelector((state) => state.notification)
+  const dispatch = useDispatch()
+  console.log(useSelector((state) => state))
 
   useEffect(() => {
     const fetchData = async () => {
@@ -29,15 +33,15 @@ const App = () => {
     try {
       const user = await loginUser(userObject)
       setUser(user)
-      setMessage(null)
+      dispatch(hideNotification())
     } catch (exception) {
-      setMessage({
-        type: 'error',
-        text: 'Wrong username or password',
-      })
-      setTimeout(() => {
-        setMessage(null)
-      }, 5000)
+      dispatch(
+        showNotification({
+          text: 'Wrong username or password',
+          type: 'error',
+          displayTime: 5,
+        })
+      )
     }
   }
 
@@ -50,21 +54,21 @@ const App = () => {
     try {
       const returnedBlog = await createBlog(newBlog, user)
       setBlogs(blogs.concat({ ...returnedBlog }))
-      setMessage({
-        type: 'success',
-        text: `A new blog ${newBlog.title} by ${newBlog.author} added`,
-      })
-      setTimeout(() => {
-        setMessage(null)
-      }, 5000)
+      dispatch(
+        showNotification({
+          text: `A new blog ${newBlog.title} by ${newBlog.author} added`,
+          type: 'success',
+          displayTime: 5,
+        })
+      )
     } catch (exception) {
-      setMessage({
-        type: 'error',
-        text: 'error on add a new blog',
-      })
-      setTimeout(() => {
-        setMessage(null)
-      }, 5000)
+      dispatch(
+        showNotification({
+          text: 'Error on add a new blog',
+          type: 'error',
+          displayTime: 5,
+        })
+      )
     }
   }
 
@@ -72,21 +76,21 @@ const App = () => {
     try {
       const returnedBlog = await putBlog(blogObject, user)
       setBlogs(blogs.map((blog) => (blog.id !== returnedBlog.id ? blog : returnedBlog)))
-      setMessage({
-        type: 'success',
-        text: 'The blog was successfully updated',
-      })
-      setTimeout(() => {
-        setMessage(null)
-      }, 5000)
+      dispatch(
+        showNotification({
+          text: 'The blog was successfully updated',
+          type: 'success',
+          displayTime: 5,
+        })
+      )
     } catch (exception) {
-      setMessage({
-        type: 'error',
-        text: 'Error on update a blog',
-      })
-      setTimeout(() => {
-        setMessage(null)
-      }, 5000)
+      dispatch(
+        showNotification({
+          text: 'Error on update a blog',
+          type: 'error',
+          displayTime: 5,
+        })
+      )
     }
   }
 
@@ -95,22 +99,22 @@ const App = () => {
       try {
         await removeBlog(blogObject, user)
         setBlogs(blogs.filter((blog) => blog.id !== blogObject.id))
-        setMessage({
-          type: 'success',
-          text: `Blog ${blogObject.title} was successfully deleted`,
-        })
-        setTimeout(() => {
-          setMessage(null)
-        }, 5000)
+        dispatch(
+          showNotification({
+            text: `Blog ${blogObject.title} was successfully deleted`,
+            type: 'success',
+            displayTime: 5,
+          })
+        )
       } catch (exception) {
         console.log(exception)
-        setMessage({
-          type: 'error',
-          text: `Blog ${blogObject.title} was not deleted`,
-        })
-        setTimeout(() => {
-          setMessage(null)
-        }, 5000)
+        dispatch(
+          showNotification({
+            text: `Blog ${blogObject.title} was not deleted`,
+            type: 'error',
+            displayTime: 5,
+          })
+        )
       }
     }
   }
@@ -137,7 +141,7 @@ const App = () => {
           </Togglable>
         </div>
       )}
-      <div>{message && <Notification type={message.type} message={message.text} />}</div>
+      <div>{stateNotification && <Notification />}</div>
       <div>
         {blogs.sort(likesSort).map((blog) => (
           <Blog
