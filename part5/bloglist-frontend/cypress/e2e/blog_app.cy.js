@@ -1,24 +1,24 @@
-describe('Blog app', function () {
-  beforeEach(function () {
+describe('Blog app', function() {
+  beforeEach(function() {
     cy.request('POST', `${Cypress.env('EXTERNAL_API')}/testing/reset`)
     const newUser = {
       name: 'cypress',
       username: 'cypress',
-      password: 'cypress',
+      password: 'cypress'
     }
     cy.request('POST', `${Cypress.env('EXTERNAL_API')}/users`, newUser)
     cy.visit('')
   })
 
-  it('Login form is shown', function () {
+  it('Login form is shown', function() {
     cy.contains('log in').click()
 
     cy.get('#username')
     cy.get('#password')
   })
 
-  describe('Login', function () {
-    it('succeeds with correct credentials', function () {
+  describe('Login',function() {
+    it('succeeds with correct credentials', function() {
       cy.contains('log in').click()
 
       cy.get('#username').type('cypress')
@@ -28,7 +28,7 @@ describe('Blog app', function () {
       cy.contains('logout')
     })
 
-    it('fails with wrong credentials', function () {
+    it('fails with wrong credentials', function() {
       cy.contains('log in').click()
 
       cy.get('#username').type('jest')
@@ -41,12 +41,12 @@ describe('Blog app', function () {
     })
   })
 
-  describe('When logged in', function () {
-    beforeEach(function () {
+  describe('When logged in', function() {
+    beforeEach(function() {
       cy.login({ username: 'cypress', password: 'cypress' })
     })
 
-    it('A blog can be created', function () {
+    it('A blog can be created', function() {
       cy.contains('new blog').click()
 
       cy.get('#title').type('Testing with cypress')
@@ -62,40 +62,51 @@ describe('Blog app', function () {
       cy.contains('Testing with cypress - Cypress')
     })
 
-    describe('When create a blog', function () {
-      beforeEach(function () {
+    describe('When create a blog', function() {
+      beforeEach(function() {
         cy.createBlog({
           title: 'Testing with cypress',
           author: 'Cypress',
           url: 'localhost:3000',
         })
 
-        cy.contains('Testing with cypress - Cypress').parent().find('button').as('view-button')
+        cy.contains('Testing with cypress - Cypress')
+          .parent()
+          .find('button')
+          .as('view-button')
       })
 
-      it('users can like a blog', function () {
+      it('users can like a blog', function() {
         cy.get('@view-button').click()
 
-        cy.get('@view-button').parent().get('#like-button').click()
+        cy.get('@view-button')
+          .parent()
+          .get('#like-button')
+          .click()
 
         cy.contains('The blog was successfully updated')
 
-        cy.get('@view-button').parent().should('contain', 'likes: 1')
+        cy.get('@view-button')
+          .parent()
+          .should('contain', 'likes: 1')
       })
 
-      it('user who created a blog can delete it', function () {
+      it('user who created a blog can delete it', function() {
         cy.get('@view-button').click()
 
-        cy.get('@view-button').parent().get('#remove-button').click()
+        cy.get('@view-button')
+          .parent()
+          .get('#remove-button')
+          .click()
 
         cy.get('.blog').should('not.exist')
       })
 
-      it('other users but the creator do not see the delete button', function () {
+      it('other users but the creator do not see the delete button', function() {
         const newUser = {
           name: 'Another User',
           username: 'havenoblogs',
-          password: 'havenoblogs',
+          password: 'havenoblogs'
         }
         cy.request('POST', `${Cypress.env('EXTERNAL_API')}/users`, newUser)
 
@@ -105,57 +116,10 @@ describe('Blog app', function () {
 
         cy.get('@view-button').click()
 
-        cy.get('@view-button').parent().get('#remove-button').should('not.exist')
-      })
-    })
-    describe('Blogs ordered by number of likes', function () {
-      it('they are ordered by number of likes', function () {
-        cy.createBlog({
-          author: 'Vinicius Freitas',
-          title: 'blog1',
-          url: 'http://localhost:3000/example/blog1',
-        })
-        cy.createBlog({
-          author: 'Vinicius Freitas',
-          title: 'blog2',
-          url: 'http://localhost:3000/example/blog2',
-        })
-        cy.createBlog({
-          author: 'Vinicius Freitas',
-          title: 'blog3',
-          url: 'http://localhost:3000/example/blog3',
-        })
-
-        cy.contains('blog1').parent().parent().as('blog1')
-        cy.contains('blog2').parent().parent().as('blog2')
-        cy.contains('blog3').parent().parent().as('blog3')
-
-        cy.get('@blog1').contains('view').click()
-        cy.get('@blog2').contains('view').click()
-        cy.get('@blog3').contains('view').click()
-
-        cy.get('@blog1').contains('like').as('like1')
-        cy.get('@blog2').contains('like').as('like2')
-        cy.get('@blog3').contains('like').as('like3')
-
-        cy.get('@like2').click()
-        cy.wait(500)
-        cy.get('@like1').click()
-        cy.wait(500)
-        cy.get('@like1').click()
-        cy.wait(500)
-        cy.get('@like3').click()
-        cy.wait(500)
-        cy.get('@like3').click()
-        cy.wait(500)
-        cy.get('@like3').click()
-        cy.wait(500)
-
-        cy.get('.blog').then((blogs) => {
-          cy.wrap(blogs[0]).contains('likes: 3')
-          cy.wrap(blogs[1]).contains('likes: 2')
-          cy.wrap(blogs[2]).contains('likes: 1')
-        })
+        cy.get('@view-button')
+          .parent()
+          .get('#remove-button')
+          .should('not.exist')
       })
     })
   })

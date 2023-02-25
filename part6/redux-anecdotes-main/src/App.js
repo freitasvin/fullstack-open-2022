@@ -10,12 +10,8 @@ const App = () => {
   const dispatch = useDispatch()
 
   useEffect(() => {
-    const fetchData = async () => {
-      dispatch(initializeAnecdotes())
-    }
-
-    fetchData()
-  }, [dispatch])
+    dispatch(initializeAnecdotes())
+  }, [])
 
   return (
     <div>

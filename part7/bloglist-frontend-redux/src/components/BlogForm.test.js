@@ -17,6 +17,6 @@ describe('Testing blog form component', () => {
     userEvent.click(createButton)
 
     expect(mockAddBlog.mock.calls).toHaveLength(1)
-    expect(mockAddBlog.mock.calls[0][0].title).toBe('Submiting...' )
+    expect(mockAddBlog.mock.calls[0][0].title).toBe('Submiting...')
   })
 })

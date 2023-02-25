@@ -10,7 +10,7 @@ export const LoginForm = ({ handleLogin }) => {
 
     handleLogin({
       username: username,
-      password: password
+      password: password,
     })
 
     setUsername('')
@@ -20,26 +20,32 @@ export const LoginForm = ({ handleLogin }) => {
   return (
     <div>
       <h1>Login</h1>
-      <form onSubmit={event => handleSubmit(event)}>
+      <form onSubmit={(event) => handleSubmit(event)}>
         <div>
           username
           <input
-            id='username'
-            type='text'
+            id="username"
+            type="text"
             value={username}
-            onChange={({ target }) => {setUsername(target.value)}}
+            onChange={({ target }) => {
+              setUsername(target.value)
+            }}
           />
         </div>
         <div>
           password
           <input
-            id='password'
-            type='password'
+            id="password"
+            type="password"
             value={password}
-            onChange={({ target }) => {setPassword(target.value)}}
+            onChange={({ target }) => {
+              setPassword(target.value)
+            }}
           />
         </div>
-        <button id='login-button' type='submit'>login</button>
+        <button id="login-button" type="submit">
+          login
+        </button>
       </form>
     </div>
   )
