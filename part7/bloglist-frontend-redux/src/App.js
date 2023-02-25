@@ -1,35 +1,34 @@
-import React, { useState, useEffect } from 'react'
-import { loginUser, logoutUser } from '../src/services/login'
-import { putBlog, removeBlog } from './services/blogs'
-import { getUserStorage } from './storage/userStorage'
+import React, { useEffect } from 'react'
 import { Blog } from './components/Blog'
 import { BlogForm } from './components/BlogForm'
 import { LoginForm } from './components/LoginForm'
 import { Togglable } from './components/Togglable'
 import { Notification } from './components/Notification'
-import { hideNotification, showNotification } from './reducers/notificationReducer'
+import { hideStateNotification, showNotificationDispatcher } from './reducers/notificationReducer'
 import { useDispatch, useSelector } from 'react-redux'
-import { initializeBlogs, newBlog } from './reducers/blogsReducer'
+import {
+  initializeBlogsDispatcher,
+  newBlogDispatcher,
+  voteBlogDispatcher,
+  removeBlogDispatcher,
+} from './reducers/blogsReducer'
+import { loginUserDispatcher, logoutUserDipatcher } from './reducers/userReducer'
 
 const App = () => {
-  const [user, setUser] = useState(null)
-  const setBlogs = null
-  const { blogs, notification } = useSelector((state) => state)
   const dispatch = useDispatch()
+  const { blogs, notification, user } = useSelector((state) => state)
 
   useEffect(() => {
-    dispatch(initializeBlogs())
-    setUser(getUserStorage())
+    dispatch(initializeBlogsDispatcher())
   }, [])
 
   const handleLogin = async (userObject) => {
     try {
-      const user = await loginUser(userObject)
-      setUser(user)
-      dispatch(hideNotification())
+      dispatch(loginUserDispatcher(userObject))
+      dispatch(hideStateNotification())
     } catch (exception) {
       dispatch(
-        showNotification({
+        showNotificationDispatcher({
           text: 'Wrong username or password',
           type: 'error',
           displayTime: 5,
@@ -39,15 +38,14 @@ const App = () => {
   }
 
   const handleLogout = () => {
-    logoutUser()
-    setUser(null)
+    dispatch(logoutUserDipatcher())
   }
 
   const addBlog = async (blogData) => {
     try {
-      dispatch(newBlog(blogData, user))
+      dispatch(newBlogDispatcher(blogData, user))
       dispatch(
-        showNotification({
+        showNotificationDispatcher({
           text: `A new blog ${blogData.title} by ${blogData.author} added`,
           type: 'success',
           displayTime: 5,
@@ -55,7 +53,7 @@ const App = () => {
       )
     } catch (exception) {
       dispatch(
-        showNotification({
+        showNotificationDispatcher({
           text: 'Error on add a new blog',
           type: 'error',
           displayTime: 5,
@@ -66,10 +64,9 @@ const App = () => {
 
   const updateBlog = async (blogObject) => {
     try {
-      const returnedBlog = await putBlog(blogObject, user)
-      setBlogs(blogs.map((blog) => (blog.id !== returnedBlog.id ? blog : returnedBlog)))
+      dispatch(voteBlogDispatcher(blogObject, user))
       dispatch(
-        showNotification({
+        showNotificationDispatcher({
           text: 'The blog was successfully updated',
           type: 'success',
           displayTime: 5,
@@ -77,7 +74,7 @@ const App = () => {
       )
     } catch (exception) {
       dispatch(
-        showNotification({
+        showNotificationDispatcher({
           text: 'Error on update a blog',
           type: 'error',
           displayTime: 5,
@@ -89,10 +86,9 @@ const App = () => {
   const deleteBlog = async (blogObject) => {
     if (window.confirm(`Remove ${blogObject.title} by ${blogObject.author}`)) {
       try {
-        await removeBlog(blogObject, user)
-        setBlogs(blogs.filter((blog) => blog.id !== blogObject.id))
+        dispatch(removeBlogDispatcher(blogObject, user))
         dispatch(
-          showNotification({
+          showNotificationDispatcher({
             text: `Blog ${blogObject.title} was successfully deleted`,
             type: 'success',
             displayTime: 5,
@@ -101,7 +97,7 @@ const App = () => {
       } catch (exception) {
         console.log(exception)
         dispatch(
-          showNotification({
+          showNotificationDispatcher({
             text: `Blog ${blogObject.title} was not deleted`,
             type: 'error',
             displayTime: 5,
@@ -129,7 +125,7 @@ const App = () => {
             </button>
           </div>
           <Togglable buttonLabel="new blog">
-            <BlogForm setBlogs={setBlogs} blogs={blogs} user={user} addBlog={addBlog} />
+            <BlogForm addBlog={addBlog} />
           </Togglable>
         </div>
       )}

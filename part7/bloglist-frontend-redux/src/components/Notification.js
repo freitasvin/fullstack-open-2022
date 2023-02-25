@@ -7,7 +7,6 @@ export const Notification = () => {
   if (text === null) {
     return null
   }
-  console.log(type)
 
   return <div className={type}>{text}</div>
 }
