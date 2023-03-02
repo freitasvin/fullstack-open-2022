@@ -9,6 +9,7 @@ import { useMutation, useQuery, useQueryClient } from 'react-query'
 import { NotificationContext } from './contexts/NotificationContext'
 import { createBlog, getAllBlog, putBlog, removeBlog } from './services/blogs'
 import { UserContext } from './contexts/UserContext'
+import { User } from './components/User'
 
 const App = () => {
   const queryClient = useQueryClient()
@@ -149,6 +150,7 @@ const App = () => {
           }
         />
         <Route path="/users" element={<Users />} />
+        <Route path="/user/:id" element={<User user={null} />} />
       </Routes>
     </div>
   )

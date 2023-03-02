@@ -1,6 +1,7 @@
 import React from 'react'
 import { useQuery } from 'react-query'
 import { getAllUsers } from '../services/users'
+import { Link } from 'react-router-dom'
 
 export const Users = () => {
   const {
@@ -31,7 +32,11 @@ export const Users = () => {
           </tr>
           {allUsers.map((user) => (
             <tr key={user.id}>
-              <td>{user.username}</td>
+              <td>
+                <Link to={`/user/${user.id}`} state={{ user: user }}>
+                  {user.username}
+                </Link>
+              </td>
               <td>{user.blogs.length}</td>
             </tr>
           ))}
