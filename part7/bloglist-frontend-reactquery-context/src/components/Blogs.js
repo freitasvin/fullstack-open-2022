@@ -1,5 +1,8 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import PropTypes from 'prop-types'
+import { UserContext } from '../contexts/UserContext'
+import { BlogForm } from './BlogForm'
+import { Togglable } from './Togglable'
 
 export const Blog = ({ user, blog, updateBlog, deleteBlog }) => {
   const [buttonText, setButtonText] = useState('view')
@@ -45,6 +48,32 @@ export const Blog = ({ user, blog, updateBlog, deleteBlog }) => {
           </div>
         </div>
       )}
+    </div>
+  )
+}
+
+export const Blogs = ({ blogs, updateBlog, deleteBlog, addBlog }) => {
+  const [user] = useContext(UserContext)
+  const likesSort = (b1, b2) => b2.likes - b1.likes
+  return (
+    <div>
+      {user && (
+        <Togglable buttonLabel="new blog">
+          <BlogForm addBlog={addBlog} />
+        </Togglable>
+      )}
+      {blogs
+        .slice() //the array is frozen in strict mode by the state
+        .sort(likesSort)
+        .map((blog) => (
+          <Blog
+            key={blog.id}
+            user={user}
+            blog={blog}
+            updateBlog={updateBlog}
+            deleteBlog={deleteBlog}
+          />
+        ))}
     </div>
   )
 }
