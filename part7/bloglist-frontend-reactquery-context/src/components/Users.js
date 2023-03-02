@@ -33,9 +33,7 @@ export const Users = () => {
           {allUsers.map((user) => (
             <tr key={user.id}>
               <td>
-                <Link to={`/user/${user.id}`} state={{ user: user }}>
-                  {user.username}
-                </Link>
+                <Link to={`/user/${user.id}`}>{user.username}</Link>
               </td>
               <td>{user.blogs.length}</td>
             </tr>

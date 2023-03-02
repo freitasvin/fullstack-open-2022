@@ -6,6 +6,11 @@ export const getAllBlog = async () => {
   return data
 }
 
+export const getBlogById = async (blogId) => {
+  const { data } = await axios.get(`${baseUrl}/${blogId}`)
+  return data
+}
+
 export const createBlog = async ({ blogData, user }) => {
   const config = {
     headers: { Authorization: `Bearer ${user.token}` },

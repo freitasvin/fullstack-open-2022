@@ -1,4 +1,5 @@
 import React, { useContext, useState } from 'react'
+import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import { UserContext } from '../contexts/UserContext'
 import { BlogForm } from './BlogForm'
@@ -27,7 +28,9 @@ export const Blog = ({ user, blog, updateBlog, deleteBlog }) => {
 
   return (
     <div className="blog">
-      {blog.title} - {blog.author}
+      <Link to={`/blogs/${blog.id}`}>
+        {blog.title} - {blog.author}
+      </Link>
       <button onClick={handleClickDetails}>{buttonText}</button>
       {viewDetails && (
         <div>

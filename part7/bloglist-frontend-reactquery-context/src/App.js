@@ -10,6 +10,7 @@ import { NotificationContext } from './contexts/NotificationContext'
 import { createBlog, getAllBlog, putBlog, removeBlog } from './services/blogs'
 import { UserContext } from './contexts/UserContext'
 import { User } from './components/User'
+import { BlogPost } from './components/BlogPost'
 
 const App = () => {
   const queryClient = useQueryClient()
@@ -150,7 +151,11 @@ const App = () => {
           }
         />
         <Route path="/users" element={<Users />} />
-        <Route path="/user/:id" element={<User user={null} />} />
+        <Route path="/user/:id" element={<User />} />
+        <Route
+          path="/blogs/:id"
+          element={<BlogPost handleLike={updateBlog} handleClickRemove={deleteBlog} />}
+        />
       </Routes>
     </div>
   )
