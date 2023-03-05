@@ -9,17 +9,17 @@ export const UserContextProvider = ({ children }) => {
   const loggedUser = getUserStorage()
   const [user, userDispatcher] = useReducer(userReducer, loggedUser)
 
-  const loginUserDispatcher = async (userCredentials) => {
+  async function loginUserDispatcher(userCredentials) {
     const newUser = await loginUser(userCredentials)
     userDispatcher({ type: 'SET_USER', payload: newUser })
   }
 
-  const logoutUserDispatcher = async () => {
+  function logoutUserDispatcher() {
     userDispatcher({ type: 'REMOVE_USER' })
   }
 
   return (
-    <UserContext.Provider value={[user, loginUserDispatcher, logoutUserDispatcher]}>
+    <UserContext.Provider value={{ user, loginUserDispatcher, logoutUserDispatcher }}>
       {children}
     </UserContext.Provider>
   )

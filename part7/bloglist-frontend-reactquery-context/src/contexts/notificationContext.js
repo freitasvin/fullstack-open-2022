@@ -6,7 +6,7 @@ export const NotificationContext = createContext()
 export const NotificationContextProvider = ({ children }) => {
   const [notification, notificationDispatcher] = useReducer(notificationReducer, null)
 
-  const showNotificationDispatcher = ({ text, errorType, displayTime = 5 }) => {
+  function showNotificationDispatcher({ text, errorType, displayTime = 5 }) {
     if (!notification) {
       notificationDispatcher({ type: 'SET_NOTIFICATION', payload: { text, errorType } })
       setTimeout(() => {
@@ -16,7 +16,7 @@ export const NotificationContextProvider = ({ children }) => {
   }
 
   return (
-    <NotificationContext.Provider value={[notification, showNotificationDispatcher]}>
+    <NotificationContext.Provider value={{ notification, showNotificationDispatcher }}>
       {children}
     </NotificationContext.Provider>
   )

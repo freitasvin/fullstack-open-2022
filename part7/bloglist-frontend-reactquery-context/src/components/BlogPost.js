@@ -3,13 +3,16 @@ import { useQuery } from 'react-query'
 import { useParams } from 'react-router-dom'
 import { UserContext } from '../contexts/UserContext'
 import { getBlogById } from '../services/blogs'
+import { useUpdateBlog } from '../hooks/mutations'
+import { useField } from '../hooks/useField'
 
-export const BlogPost = ({ updateBlog, deleteBlog }) => {
+export const BlogPost = ({ deleteBlog }) => {
   const params = useParams()
-  const [user] = useContext(UserContext)
-  const [comment, setComment] = useState('')
+  const { user } = useContext(UserContext)
   const [blogComments, setBlogComments] = useState([])
   const [blogLikes, setBlogLikes] = useState(0)
+  const { reset: resetComment, ...commentProps } = useField('text')
+  const { mutate: updateBlog } = useUpdateBlog()
 
   const {
     data: blog,
@@ -24,19 +27,15 @@ export const BlogPost = ({ updateBlog, deleteBlog }) => {
     },
   })
 
-  const handleCommentChange = ({ target }) => {
-    setComment(target.value)
-  }
-
   const handleClickComment = () => {
     const blogObject = {
       ...blog,
-      comments: [...blog.comments, comment],
+      comments: [...blog.comments, commentProps.value],
     }
 
-    updateBlog(blogObject)
+    updateBlog({ blogData: blogObject })
     setBlogComments(blogObject.comments)
-    setComment('')
+    resetComment()
   }
 
   const handleClickLike = () => {
@@ -44,7 +43,7 @@ export const BlogPost = ({ updateBlog, deleteBlog }) => {
       ...blog,
       likes: blogLikes + 1,
     }
-    updateBlog(blogObject)
+    updateBlog({ blogData: blogObject })
     setBlogLikes(blogObject.likes)
   }
 
@@ -81,7 +80,7 @@ export const BlogPost = ({ updateBlog, deleteBlog }) => {
       <div>
         <h3>comments</h3>
         <div>
-          <input type="text" onChange={handleCommentChange} />
+          <input id="new-comment" {...commentProps} />
           <button onClick={handleClickComment}>add coment</button>
         </div>
         <div>

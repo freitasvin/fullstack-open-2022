@@ -1,68 +1,48 @@
-import React, { useContext, useState } from 'react'
-import { Link } from 'react-router-dom'
-import PropTypes from 'prop-types'
+import React, { useContext } from 'react'
+import { useQuery } from 'react-query'
 import { UserContext } from '../contexts/UserContext'
-import { BlogForm } from './BlogForm'
-import { Togglable } from './Togglable'
+import { getAllBlog } from '../services/blogs'
+import { useUpdateBlog, useDeleteBlog } from '../hooks/mutations'
+import { Blog, BlogForm, Togglable } from '../components'
 
-export const Blog = ({ user, blog, updateBlog, deleteBlog }) => {
-  const [buttonText, setButtonText] = useState('view')
-  const [viewDetails, setViewDetails] = useState(false)
-  const [blogLikes, setBlogLikes] = useState(blog.likes)
-
-  const handleClickDetails = () => {
-    setViewDetails(!viewDetails)
-    setButtonText(viewDetails === true ? 'view' : 'hide')
-  }
-
-  const handleClickLike = () => {
-    const blogObject = {
-      ...blog,
-      likes: blogLikes + 1,
-    }
-    updateBlog(blogObject)
-    setBlogLikes(blogObject.likes)
-  }
-
-  const handleClickRemove = () => deleteBlog(blog)
-
-  return (
-    <div className="blog">
-      <Link to={`/blogs/${blog.id}`}>
-        {blog.title} - {blog.author}
-      </Link>
-      <button onClick={handleClickDetails}>{buttonText}</button>
-      {viewDetails && (
-        <div>
-          <div>{blog.url}</div>
-          <div>
-            likes: {blogLikes}
-            <button id="like-button" hidden={!user} onClick={handleClickLike}>
-              like
-            </button>
-          </div>
-          <div>{blog.user.username}</div>
-          <div>
-            {user && user.username === blog.user.username && (
-              <button id="remove-button" hidden={!user} onClick={handleClickRemove}>
-                remove
-              </button>
-            )}
-          </div>
-        </div>
-      )}
-    </div>
-  )
-}
-
-export const Blogs = ({ blogs, updateBlog, deleteBlog, addBlog }) => {
-  const [user] = useContext(UserContext)
+export const Blogs = () => {
+  const { user } = useContext(UserContext)
+  const { mutate: updateBlog } = useUpdateBlog()
+  const { mutate: deleteBlog } = useDeleteBlog()
   const likesSort = (b1, b2) => b2.likes - b1.likes
+
+  const {
+    data: blogs,
+    isLoading,
+    isError,
+  } = useQuery('blogs', getAllBlog, {
+    refetchOnWindowFocus: false,
+    retry: false,
+  })
+
+  if (isLoading) {
+    return <div>..loading</div>
+  }
+
+  if (isError) {
+    return <div>blogs service not available due to problems in server</div>
+  }
+
+  const handleDeleteBlog = (blogData) => {
+    if (window.confirm(`Remove ${blogData.title} by ${blogData.author}`)) {
+      deleteBlog({ blogData: blogData })
+    }
+  }
+
+  const handleLikeBlog = (blogData) => {
+    updateBlog({ blogData: blogData })
+  }
+
   return (
     <div>
       {user && (
         <Togglable buttonLabel="new blog">
-          <BlogForm addBlog={addBlog} />
+          <BlogForm />
         </Togglable>
       )}
       {blogs
@@ -73,16 +53,10 @@ export const Blogs = ({ blogs, updateBlog, deleteBlog, addBlog }) => {
             key={blog.id}
             user={user}
             blog={blog}
-            updateBlog={updateBlog}
-            deleteBlog={deleteBlog}
+            handleLikeBlog={handleLikeBlog}
+            handleDeleteBlog={handleDeleteBlog}
           />
         ))}
     </div>
   )
-}
-
-Blog.propTypes = {
-  blog: PropTypes.object.isRequired,
-  updateBlog: PropTypes.func.isRequired,
-  deleteBlog: PropTypes.func.isRequired,
 }

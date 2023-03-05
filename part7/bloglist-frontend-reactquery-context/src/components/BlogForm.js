@@ -1,23 +1,27 @@
-import React, { useState } from 'react'
-import PropTypes from 'prop-types'
+import React from 'react'
+import { useField } from '../hooks/useField'
+import { useCreateBlog } from '../hooks/mutations'
 
-export const BlogForm = ({ addBlog }) => {
-  const [blogTitle, setBlogTitle] = useState('')
-  const [blogAuthor, setBlogAuthor] = useState('')
-  const [blogUrl, setBlogUrl] = useState('')
+export const BlogForm = () => {
+  const { reset: resetTitle, ...titleProps } = useField('text')
+  const { reset: resetAuthor, ...authorProps } = useField('text')
+  const { reset: resetUrl, ...urlProps } = useField('text')
+  const { mutate: createBlog } = useCreateBlog()
 
   const handleSubmit = async (event) => {
     event.preventDefault()
 
-    addBlog({
-      title: blogTitle,
-      author: blogAuthor,
-      url: blogUrl,
-    })
+    const blogData = {
+      title: titleProps.value,
+      author: authorProps.value,
+      url: urlProps.value,
+    }
 
-    setBlogTitle('')
-    setBlogAuthor('')
-    setBlogUrl('')
+    createBlog({ blogData: blogData })
+
+    resetTitle()
+    resetAuthor()
+    resetUrl()
   }
 
   return (
@@ -26,36 +30,15 @@ export const BlogForm = ({ addBlog }) => {
       <form onSubmit={handleSubmit}>
         <div>
           title
-          <input
-            id="title"
-            type="text"
-            value={blogTitle}
-            onChange={({ target }) => {
-              setBlogTitle(target.value)
-            }}
-          />
+          <input id="title" {...titleProps} />
         </div>
         <div>
           author
-          <input
-            id="author"
-            type="text"
-            value={blogAuthor}
-            onChange={({ target }) => {
-              setBlogAuthor(target.value)
-            }}
-          />
+          <input id="author" {...authorProps} />
         </div>
         <div>
           url
-          <input
-            id="url"
-            type="text"
-            value={blogUrl}
-            onChange={({ target }) => {
-              setBlogUrl(target.value)
-            }}
-          />
+          <input id="url" {...urlProps} />
         </div>
         <button id="create-button" type="submit">
           create
@@ -63,8 +46,4 @@ export const BlogForm = ({ addBlog }) => {
       </form>
     </div>
   )
-}
-
-BlogForm.propTypes = {
-  addBlog: PropTypes.func.isRequired,
 }

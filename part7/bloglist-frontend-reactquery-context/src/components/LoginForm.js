@@ -1,20 +1,39 @@
-import React, { useState } from 'react'
-import PropTypes from 'prop-types'
+import React, { useContext } from 'react'
+import { useField } from '../hooks/useField'
+import { NotificationContext } from '../contexts/NotificationContext'
+import { UserContext } from '../contexts/UserContext'
+import { useNavigate } from 'react-router-dom'
 
-export const LoginForm = ({ handleLogin }) => {
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
+export const LoginForm = () => {
+  const { reset: resetUsername, ...usernameProps } = useField('text')
+  const { reset: resetPassword, ...passwordProps } = useField('text')
+  const { showNotificationDispatcher } = useContext(NotificationContext)
+  const { loginUserDispatcher } = useContext(UserContext)
+  const navigate = useNavigate()
 
   const handleSubmit = async (event) => {
     event.preventDefault()
 
     handleLogin({
-      username: username,
-      password: password,
+      username: usernameProps.value,
+      password: passwordProps.value,
     })
 
-    setUsername('')
-    setPassword('')
+    resetUsername()
+    resetPassword()
+  }
+
+  const handleLogin = async (userObject) => {
+    try {
+      loginUserDispatcher(userObject)
+      navigate('/')
+    } catch (exception) {
+      showNotificationDispatcher({
+        text: 'Wrong username or password',
+        errorType: 'error',
+        displayTime: 5,
+      })
+    }
   }
 
   return (
@@ -23,25 +42,11 @@ export const LoginForm = ({ handleLogin }) => {
       <form onSubmit={(event) => handleSubmit(event)}>
         <div>
           username
-          <input
-            id="username"
-            type="text"
-            value={username}
-            onChange={({ target }) => {
-              setUsername(target.value)
-            }}
-          />
+          <input id="username" {...usernameProps} />
         </div>
         <div>
           password
-          <input
-            id="password"
-            type="password"
-            value={password}
-            onChange={({ target }) => {
-              setPassword(target.value)
-            }}
-          />
+          <input id="password" {...passwordProps} />
         </div>
         <button id="login-button" type="submit">
           login
@@ -49,8 +54,4 @@ export const LoginForm = ({ handleLogin }) => {
       </form>
     </div>
   )
-}
-
-LoginForm.propTypes = {
-  handleLogin: PropTypes.func.isRequired,
 }

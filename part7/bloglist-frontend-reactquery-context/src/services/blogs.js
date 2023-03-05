@@ -1,41 +1,37 @@
 import axios from 'axios'
-const baseUrl = '/api/blogs'
+import { getUserStorage, getUserTokenStorage } from '../storage/userStorage'
+
+const blogApi = axios.create({
+  baseURL: '/api/blogs',
+  headers: { Authorization: `Bearer ${getUserTokenStorage()}` },
+})
 
 export const getAllBlog = async () => {
-  const { data } = await axios.get(baseUrl)
+  const { data } = await blogApi.get('/')
   return data
 }
 
 export const getBlogById = async (blogId) => {
-  const { data } = await axios.get(`${baseUrl}/${blogId}`)
+  const { data } = await blogApi.get(`/${blogId}`)
   return data
 }
 
-export const createBlog = async ({ blogData, user }) => {
-  const config = {
-    headers: { Authorization: `Bearer ${user.token}` },
-  }
-  const { data } = await axios.post(baseUrl, blogData, config)
+export const createBlog = async ({ blogData }) => {
+  const { data } = await blogApi.post('/', blogData)
+  const user = getUserStorage()
   data.user = user
   return data
 }
 
-export const putBlog = async ({ blogData, user }) => {
-  const config = {
-    headers: { Authorization: `Bearer ${user.token}` },
-  }
-  const { data } = await axios.put(`${baseUrl}/${blogData.id}`, blogData, config)
+export const putBlog = async ({ blogData }) => {
+  const { data } = await blogApi.put(`/${blogData.id}`, blogData)
   data.user = blogData.user
 
   return data
 }
 
-export const removeBlog = async ({ blogData, user }) => {
-  const config = {
-    headers: { Authorization: `Bearer ${user.token}` },
-  }
-
-  await axios.delete(`${baseUrl}/${blogData.id}`, config)
+export const removeBlog = async ({ blogData }) => {
+  await blogApi.delete(`/${blogData.id}`)
 
   return blogData
 }
