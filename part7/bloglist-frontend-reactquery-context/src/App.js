@@ -5,12 +5,13 @@ import { Users } from './components/Users'
 import { LoginForm } from './components/LoginForm'
 import { Togglable } from './components/Togglable'
 import { Notification } from './components/Notification'
+import { User } from './components/User'
+import { BlogPost } from './components/BlogPost'
+import { Navbar } from './components/Navbar'
 import { useMutation, useQuery, useQueryClient } from 'react-query'
 import { NotificationContext } from './contexts/NotificationContext'
 import { createBlog, getAllBlog, putBlog, removeBlog } from './services/blogs'
 import { UserContext } from './contexts/UserContext'
-import { User } from './components/User'
-import { BlogPost } from './components/BlogPost'
 
 const App = () => {
   const queryClient = useQueryClient()
@@ -124,18 +125,12 @@ const App = () => {
 
   return (
     <div>
+      <Navbar handleLogout={handleLogout} />
       <h1>Blogs</h1>
-      {user === null ? (
+      {user === null && (
         <Togglable buttonLabel="log in">
           <LoginForm handleLogin={handleLogin} />
         </Togglable>
-      ) : (
-        <div>
-          {user.name} logged in
-          <button id="logout-button" onClick={handleLogout}>
-            logout
-          </button>
-        </div>
       )}
       <div>{notification && <Notification />}</div>
       <Routes>
@@ -154,7 +149,7 @@ const App = () => {
         <Route path="/user/:id" element={<User />} />
         <Route
           path="/blogs/:id"
-          element={<BlogPost handleLike={updateBlog} handleClickRemove={deleteBlog} />}
+          element={<BlogPost updateBlog={updateBlog} deleteBlog={deleteBlog} />}
         />
       </Routes>
     </div>

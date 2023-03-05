@@ -21,7 +21,6 @@ export const createBlog = async ({ blogData, user }) => {
 }
 
 export const putBlog = async ({ blogData, user }) => {
-  console.log(user)
   const config = {
     headers: { Authorization: `Bearer ${user.token}` },
   }

@@ -15,7 +15,7 @@ export const Blog = ({ user, blog, updateBlog, deleteBlog }) => {
     setButtonText(viewDetails === true ? 'view' : 'hide')
   }
 
-  const handleLike = () => {
+  const handleClickLike = () => {
     const blogObject = {
       ...blog,
       likes: blogLikes + 1,
@@ -37,7 +37,7 @@ export const Blog = ({ user, blog, updateBlog, deleteBlog }) => {
           <div>{blog.url}</div>
           <div>
             likes: {blogLikes}
-            <button id="like-button" hidden={!user} onClick={handleLike}>
+            <button id="like-button" hidden={!user} onClick={handleClickLike}>
               like
             </button>
           </div>

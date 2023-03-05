@@ -3,8 +3,6 @@ module.exports = {
   env: {
     browser: true,
     es6: true,
-    'jest/globals': true,
-    'cypress/globals': true,
   },
   extends: ['eslint:recommended', 'plugin:react/recommended', 'eslint-config-prettier'],
   parserOptions: {
@@ -14,7 +12,7 @@ module.exports = {
     ecmaVersion: 2018,
     sourceType: 'module',
   },
-  plugins: ['react', 'jest', 'cypress', 'eslint-plugin-prettier'],
+  plugins: ['react', 'eslint-plugin-prettier'],
   rules: {
     indent: 0,
     'linebreak-style': 0,
