@@ -2,6 +2,7 @@ import React, { useState, useContext } from 'react'
 import { Link } from 'react-router-dom'
 import { UserContext } from '../contexts/UserContext'
 import PropTypes from 'prop-types'
+import { Button, Typography } from '@mui/material'
 
 export const Blog = ({ blog, handleDeleteBlog, handleLikeBlog }) => {
   const [buttonText, setButtonText] = useState('view')
@@ -27,25 +28,31 @@ export const Blog = ({ blog, handleDeleteBlog, handleLikeBlog }) => {
 
   return (
     <div className="blog">
-      <Link to={`/blogs/${blog.id}`}>
+      <Typography component={Link} to={`/blogs/${blog.id}`}>
         {blog.title} - {blog.author}
-      </Link>
-      <button onClick={handleClickDetails}>{buttonText}</button>
+      </Typography>
+      <Button onClick={handleClickDetails}>{buttonText}</Button>
       {viewDetails && (
         <div>
-          <div>{blog.url}</div>
+          <Typography>{blog.url}</Typography>
           <div>
             likes: {blogLikes}
-            <button id="like-button" hidden={!user} onClick={handleClickLike}>
+            <Button
+              id="like-button"
+              size="small"
+              variant="contained"
+              hidden={!user}
+              onClick={handleClickLike}
+            >
               like
-            </button>
+            </Button>
           </div>
           <div>{blog.user.username}</div>
           <div>
             {user && user.username === blog.user.username && (
-              <button id="remove-button" hidden={!user} onClick={handleClickRemove}>
+              <Button id="remove-button" hidden={!user} onClick={handleClickRemove}>
                 remove
-              </button>
+              </Button>
             )}
           </div>
         </div>

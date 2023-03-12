@@ -3,15 +3,15 @@ import { Routes, Route, Navigate } from 'react-router-dom'
 import { NotificationContext } from './contexts/NotificationContext'
 import { UserContext } from './contexts/UserContext'
 import { Navbar, Notification, LoginForm, Blogs, BlogPost, Users, User } from './components'
+import { Container } from '@mui/material'
 
 const App = () => {
   const { notification } = useContext(NotificationContext)
   const { user } = useContext(UserContext)
 
   return (
-    <div>
+    <Container sx={{ height: '100vh' }}>
       <Navbar />
-      <h1>Blogs</h1>
       <div>{notification && <Notification />}</div>
       <Routes>
         <Route path="/" element={<Blogs />} />
@@ -20,7 +20,7 @@ const App = () => {
         <Route path="/user/:id" element={<User />} />
         <Route path="/blogs/:id" element={<BlogPost />} />
       </Routes>
-    </div>
+    </Container>
   )
 }
 

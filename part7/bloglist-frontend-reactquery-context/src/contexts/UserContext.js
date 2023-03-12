@@ -1,7 +1,7 @@
 import { createContext, useReducer } from 'react'
 import { userReducer } from '../reducers/userReducer'
 import { getUserStorage } from '../storage/userStorage'
-import { loginUser } from '../services/login'
+import { loginUser, logoutUser } from '../services/login'
 
 export const UserContext = createContext()
 
@@ -15,6 +15,7 @@ export const UserContextProvider = ({ children }) => {
   }
 
   function logoutUserDispatcher() {
+    logoutUser()
     userDispatcher({ type: 'REMOVE_USER' })
   }
 

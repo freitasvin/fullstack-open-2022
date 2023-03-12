@@ -1,6 +1,7 @@
 import React from 'react'
 import { useField } from '../hooks/useField'
 import { useCreateBlog } from '../hooks/mutations'
+import { Box, Typography, TextField, Button } from '@mui/material'
 
 export const BlogForm = () => {
   const { reset: resetTitle, ...titleProps } = useField('text')
@@ -26,24 +27,19 @@ export const BlogForm = () => {
 
   return (
     <div>
-      <h1>create new</h1>
-      <form onSubmit={handleSubmit}>
+      <Typography variant="h4">create new</Typography>
+      <Box component="form" onSubmit={handleSubmit}>
         <div>
-          title
-          <input id="title" {...titleProps} />
+          <TextField id="title" label="Title" variant="outlined" />
         </div>
         <div>
-          author
-          <input id="author" {...authorProps} />
+          <TextField id="author" label="Author" variant="outlined" />
         </div>
         <div>
-          url
-          <input id="url" {...urlProps} />
+          <TextField id="url" label="Url" variant="outlined" />
         </div>
-        <button id="create-button" type="submit">
-          create
-        </button>
-      </form>
+        <Button type="submit">create</Button>
+      </Box>
     </div>
   )
 }
