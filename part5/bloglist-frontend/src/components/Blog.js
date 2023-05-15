@@ -14,7 +14,7 @@ export const Blog = ({ user, blog, updateBlog, deleteBlog }) => {
   const handleLike = () => {
     const blogObject = {
       ...blog,
-      likes: blogLikes + 1,
+      likes: blogLikes + 1
     }
     updateBlog(blogObject)
     setBlogLikes(blogObject.likes)
@@ -23,28 +23,24 @@ export const Blog = ({ user, blog, updateBlog, deleteBlog }) => {
   const handleClickRemove = () => deleteBlog(blog)
 
   return (
-    <div className="blog">
+    <div className='blog'>
       {blog.title} - {blog.author}
       <button onClick={handleClickDetails}>{buttonText}</button>
-      {viewDetails && (
+      {viewDetails &&
         <div>
           <div>{blog.url}</div>
           <div>
             likes: {blogLikes}
-            <button id="like-button" hidden={!user} onClick={handleLike}>
-              like
-            </button>
+            <button id='like-button' hidden={!user} onClick={handleLike}>like</button>
           </div>
           <div>{blog.user.username}</div>
           <div>
-            {user && user.username === blog.user.username && (
-              <button id="remove-button" hidden={!user} onClick={handleClickRemove}>
-                remove
-              </button>
-            )}
+            {user.username === blog.user.username
+              && <button id='remove-button' hidden={!user} onClick={handleClickRemove}>remove</button>
+            }
           </div>
         </div>
-      )}
+      }
     </div>
   )
 }

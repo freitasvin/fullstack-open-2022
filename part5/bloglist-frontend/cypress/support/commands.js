@@ -24,21 +24,22 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
-Cypress.Commands.add('login', (userCredentials) => {
-  cy.request('POST', `${Cypress.env('EXTERNAL_API')}/login`, userCredentials).then(({ body }) => {
-    localStorage.setItem('loggedUser', JSON.stringify(body))
-    cy.visit('')
-  })
+Cypress.Commands.add('login', userCredentials => {
+  cy.request('POST', `${Cypress.env('EXTERNAL_API')}/login`, userCredentials)
+    .then(({ body }) => {
+      localStorage.setItem('loggedUser', JSON.stringify(body))
+      cy.visit('')
+    })
 })
 
-Cypress.Commands.add('createBlog', (blog) => {
+Cypress.Commands.add('createBlog', blog => {
   cy.request({
     url: `${Cypress.env('EXTERNAL_API')}/blogs`,
     method: 'POST',
     body: blog,
     headers: {
-      Authorization: `Bearer ${JSON.parse(localStorage.getItem('loggedUser')).token}`,
-    },
+      'Authorization': `Bearer ${JSON.parse(localStorage.getItem('loggedUser')).token}`
+    }
   })
 
   cy.visit('')

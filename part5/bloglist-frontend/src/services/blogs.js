@@ -21,7 +21,7 @@ export const putBlog = async (blogData, user) => {
     headers: { Authorization: `Bearer ${user.token}` },
   }
   const { data } = await axios.put(`${baseUrl}/${blogData.id}`, blogData, config)
-  data.user = user
+  data.user = blogData.user
 
   return data
 }

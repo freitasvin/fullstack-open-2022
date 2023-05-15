@@ -7,15 +7,11 @@ import { BlogForm } from './components/BlogForm'
 import { LoginForm } from './components/LoginForm'
 import { Togglable } from './components/Togglable'
 import { Notification } from './components/Notification'
-import { hideNotification, showNotification } from './reducers/notificationReducer'
-import { useDispatch, useSelector } from 'react-redux'
 
 const App = () => {
   const [user, setUser] = useState(null)
   const [blogs, setBlogs] = useState([])
-  const stateNotification = useSelector((state) => state.notification)
-  const dispatch = useDispatch()
-  console.log(useSelector((state) => state))
+  const [message, setMessage] = useState(null)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -30,18 +26,18 @@ const App = () => {
   }, [])
 
   const handleLogin = async (userObject) => {
-    try {
+    try{
       const user = await loginUser(userObject)
       setUser(user)
-      dispatch(hideNotification())
-    } catch (exception) {
-      dispatch(
-        showNotification({
-          text: 'Wrong username or password',
-          type: 'error',
-          displayTime: 5,
-        })
-      )
+      setMessage(null)
+    } catch (exception){
+      setMessage({
+        type: 'error',
+        text: 'Wrong username or password'
+      })
+      setTimeout(() => {
+        setMessage(null)
+      }, 5000)
     }
   }
 
@@ -51,70 +47,70 @@ const App = () => {
   }
 
   const addBlog = async (newBlog) => {
-    try {
+    try{
       const returnedBlog = await createBlog(newBlog, user)
       setBlogs(blogs.concat({ ...returnedBlog }))
-      dispatch(
-        showNotification({
-          text: `A new blog ${newBlog.title} by ${newBlog.author} added`,
-          type: 'success',
-          displayTime: 5,
-        })
-      )
-    } catch (exception) {
-      dispatch(
-        showNotification({
-          text: 'Error on add a new blog',
-          type: 'error',
-          displayTime: 5,
-        })
-      )
+      setMessage({
+        type: 'success',
+        text: `A new blog ${newBlog.title} by ${newBlog.author} added`
+      })
+      setTimeout(() => {
+        setMessage(null)
+      }, 5000)
+    } catch (exception){
+      setMessage({
+        type: 'error',
+        text: 'error on add a new blog'
+      })
+      setTimeout(() => {
+        setMessage(null)
+      }, 5000)
     }
   }
 
   const updateBlog = async (blogObject) => {
-    try {
+    try{
       const returnedBlog = await putBlog(blogObject, user)
-      setBlogs(blogs.map((blog) => (blog.id !== returnedBlog.id ? blog : returnedBlog)))
-      dispatch(
-        showNotification({
-          text: 'The blog was successfully updated',
-          type: 'success',
-          displayTime: 5,
-        })
-      )
+      setBlogs(blogs.map(blog => blog.id !== returnedBlog.id ? blog : returnedBlog))
+      setMessage({
+        type: 'success',
+        text: 'The blog was successfully updated'
+      })
+      setTimeout(() => {
+        setMessage(null)
+      }, 5000)
     } catch (exception) {
-      dispatch(
-        showNotification({
-          text: 'Error on update a blog',
-          type: 'error',
-          displayTime: 5,
-        })
-      )
+      setMessage({
+        type: 'error',
+        text: 'Error on update a blog'
+      })
+      setTimeout(() => {
+        setMessage(null)
+      }, 5000)
     }
   }
 
   const deleteBlog = async (blogObject) => {
-    if (window.confirm(`Remove ${blogObject.title} by ${blogObject.author}`)) {
-      try {
+    if (window.confirm(`Remove ${blogObject.title} by ${blogObject.author}`)){
+      try{
         await removeBlog(blogObject, user)
-        setBlogs(blogs.filter((blog) => blog.id !== blogObject.id))
-        dispatch(
-          showNotification({
-            text: `Blog ${blogObject.title} was successfully deleted`,
-            type: 'success',
-            displayTime: 5,
-          })
-        )
+        setBlogs(blogs.filter(blog => blog.id !== blogObject.id))
+        setMessage({
+          type: 'success',
+          text: `Blog ${blogObject.title} was successfully deleted`
+        })
+        setTimeout(() => {
+          setMessage(null)
+        }, 5000)
       } catch (exception) {
         console.log(exception)
-        dispatch(
-          showNotification({
-            text: `Blog ${blogObject.title} was not deleted`,
-            type: 'error',
-            displayTime: 5,
-          })
-        )
+        setMessage({
+          type: 'error',
+          text: `Blog ${blogObject.title} was not deleted`
+        })
+        setTimeout(() => {
+          setMessage(null)
+        }, 5000)
       }
     }
   }
@@ -124,26 +120,34 @@ const App = () => {
   return (
     <div>
       <h1>Blogs</h1>
-      {user === null ? (
-        <Togglable buttonLabel="log in">
-          <LoginForm handleLogin={handleLogin} />
+      {user === null
+        ?
+        <Togglable buttonLabel='log in'>
+          <LoginForm handleLogin={handleLogin}/>
         </Togglable>
-      ) : (
+        :
         <div>
           <div>
             {user.name} logged in
-            <button id="logout-button" onClick={handleLogout}>
-              logout
-            </button>
+            <button id='logout-button' onClick={handleLogout}>logout</button>
           </div>
-          <Togglable buttonLabel="new blog">
-            <BlogForm setBlogs={setBlogs} blogs={blogs} user={user} addBlog={addBlog} />
+          <Togglable buttonLabel='new blog'>
+            <BlogForm
+              setBlogs={setBlogs}
+              blogs={blogs}
+              user={user}
+              addBlog={addBlog}
+            />
           </Togglable>
         </div>
-      )}
-      <div>{stateNotification && <Notification />}</div>
+      }
       <div>
-        {blogs.sort(likesSort).map((blog) => (
+        {message &&
+          <Notification type={message.type} message={message.text}/>
+        }
+      </div>
+      <div>
+        {blogs.sort(likesSort).map(blog =>
           <Blog
             key={blog.id}
             user={user}
@@ -151,7 +155,7 @@ const App = () => {
             updateBlog={updateBlog}
             deleteBlog={deleteBlog}
           />
-        ))}
+        )}
       </div>
     </div>
   )

@@ -11,17 +11,19 @@ describe('Testing blog component', () => {
     url: 'www.testing-library.com',
     likes: 20,
     user: {
-      username: 'Vinícius',
-    },
+      username: 'Vinícius'
+    }
   }
 
   const mockUpdate = jest.fn()
   const mockDelete = jest.fn()
 
   test('should render only title and author by default', () => {
-    render(<Blog blog={blog} updateBlog={mockUpdate} deleteBlog={mockDelete} />)
+    render(<Blog blog={blog} updateBlog={mockUpdate} deleteBlog={mockDelete}/>)
 
-    const element = screen.getByText(`${blog.title} - ${blog.author}`)
+    const element = screen.getByText(
+      `${blog.title} - ${blog.author}`
+    )
     const button = screen.getByText('view')
     let userDetails = screen.queryByText(blog.url)
 
@@ -31,8 +33,10 @@ describe('Testing blog component', () => {
   })
 
   test('should render all deitals', () => {
-    render(<Blog blog={blog} updateBlog={mockUpdate} deleteBlog={mockDelete} />)
-    const element = screen.getByText(`${blog.title} - ${blog.author}`)
+    render(<Blog blog={blog} updateBlog={mockUpdate} deleteBlog={mockDelete}/>)
+    const element = screen.getByText(
+      `${blog.title} - ${blog.author}`
+    )
     const button = screen.getByText('view')
 
     expect(element).toBeDefined()

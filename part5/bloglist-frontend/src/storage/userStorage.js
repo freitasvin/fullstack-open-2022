@@ -3,7 +3,7 @@ export const getUserStorage = () => {
   return JSON.parse(loggedUser) || null
 }
 
-export const saveUserStorage = (user) => {
+export const saveUserStorage = user => {
   window.localStorage.setItem('loggedUser', JSON.stringify(user))
 }
 
